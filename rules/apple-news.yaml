@@ -1,0 +1,13 @@
+# 精确域名直接写；域名及其全部子域名使用 +.example.com。
+payload:
+- +.apple.news
+- +.news.apple.com
+- +.news-client-search.apple.com
+- +.news-assets.apple.com
+- +.news-events.apple.com
+- +.news-edge.apple.com
+- +.news-todayconfig-edge.apple.com
+- +.news-sports-events.apple.com
+- +.news-client.apple.com
+- gateway.icloud.com
+- apple.comscoreresearch.com

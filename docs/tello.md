@@ -2,11 +2,11 @@
 
 已知场景：Tello在纯中国大陆网络的其他Wi-Fi下正常，连接有OpenClash接管的家庭Wi-Fi后失败。因此默认策略是DIRECT，不因为美国号码就强制走美国代理。
 
-本模板将Tello/T-Mobile相关域名送往独立Tello组，默认DIRECT；历史T-Mobile地址范围的兜底仅匹配UDP500/4500，不把整个网段或所有IPsec流量无差别接管。
+本模板将Tello/T-Mobile相关域名直接设为DIRECT；历史T-Mobile地址范围的兜底仅匹配UDP500/4500，不把整个网段或所有IPsec流量无差别接管。
 
 ## 一次性设备侧检查
 
-1. 确认实际选中的 `☎️ Tello` 是DIRECT。旧的持久化选择可能仍是DMIT。
+1. 确认使用新方案，相关域名命中personal-direct并显示DIRECT。精简版不再有独立Tello策略组。
 2. ePDG不能依赖虚拟Fake-IP。若OpenClash使用Fake-IP，在其持久DNS覆写/过滤设置中**追加**以下例外，保留已有LAN等例外：
 
 ```text
@@ -31,6 +31,6 @@ dns:
 
 若仍失败，先做单手机绕过OpenClash的对照，再检查UDP是否进入内核、访问控制/来源端口绕过、NAT和IPv6。不要用“浏览器显示美国IP”代替通话验收。iOS系统蜂窝服务可能不走手机VPN，而家庭路由器又处在另一层。
 
-此仓库不修改路由器，不声称以上步骤已经在你的手机验收。
+可维护的高级DNS片段见[DNS说明](dns.md)。此仓库不修改路由器，不声称以上步骤已经在你的手机验收。
 
 [Tello官方排障](https://tello.com/help_center/technical-support/wi-fi-calling-is-not-working-what-can-i-do) · [T-Mobile网络要求](https://www.t-mobile.com/support/coverage/wi-fi-calling-on-a-corporate-network)

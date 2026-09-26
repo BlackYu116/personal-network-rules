@@ -6,7 +6,7 @@ import yaml
 ROOT=Path(__file__).resolve().parents[1]
 p=argparse.ArgumentParser();p.add_argument('--mihomo-bin');args=p.parse_args()
 c=yaml.safe_load((ROOT/'tower.yaml').read_text())
-assert set(c)=={'rules','proxy-groups','rule-providers','profile'},'Only public policy fields are allowed'
+assert set(c)=={'rules','proxy-groups','rule-providers','profile','dns'},'Only public policy fields are allowed'
 raw=(ROOT/'tower.yaml').read_text()
 for marker in ['vless://','ss://','vmess://','anytls://','token2=','sid=','PRIVATE KEY','password:', 'uuid:','private-key:']:
  assert marker not in raw,'Potential credential or private configuration'
@@ -29,7 +29,9 @@ def leaf(g,seen=None):
  return leaf(resolved[g][0],seen|{g}) if g in resolved else g
 for g in groups:leaf(g)
 assert leaf('🌍 海外默认')=='DMIT'
-assert leaf('☎️ Tello')=='DIRECT'
+assert len(groups)==8
+assert leaf('🏦 金融')=='DMIT'
+assert leaf('🤖 AI / X')=='DMIT'
 assert '日本' in leaf('🪙 Crypto')
 assert re.search(groups['🇺🇸 DMIT 专线']['filter'],'DMIT | provider')
 assert not re.search(groups['🇯🇵 日本节点']['filter'],'美国 US validation')
@@ -38,9 +40,14 @@ def get(item):
  assert provider['interval']==86400
  assert provider['behavior'] in ['domain','ipcidr'] and provider['format']=='yaml'
  assert provider['proxy'] in groups
- assert provider['url'].startswith('https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/')
- req=urllib.request.Request(provider['url'],headers={'User-Agent':'personal-network-rules-validator'})
- with urllib.request.urlopen(req,timeout=30) as r:data=r.read(8*1024*1024+1)
+ personal='https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/'
+ if provider['url'].startswith(personal):
+  rel=provider['url'][len(personal):];assert rel.startswith('rules/') and '..' not in rel
+  data=(ROOT/rel).read_bytes()
+ else:
+  assert provider['url'].startswith('https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/')
+  req=urllib.request.Request(provider['url'],headers={'User-Agent':'personal-network-rules-validator'})
+  with urllib.request.urlopen(req,timeout=30) as r:data=r.read(8*1024*1024+1)
  assert len(data)<=8*1024*1024
  content=yaml.safe_load(data);assert isinstance(content,dict) and isinstance(content.get('payload'),list) and content['payload']
  assert all(isinstance(x,str) for x in content['payload'])
@@ -57,7 +64,7 @@ def route(host,network='tcp',port=443):
   z=row.split(',');kind=z[0];match=False
   if kind=='AND':
    m=re.fullmatch(r'AND,\(\(NETWORK,UDP\),\(DST-PORT,(\d+)\),\(IP-CIDR,([^,]+),no-resolve\)\),([^,]+)',row)
-   assert m and m.group(3) in groups
+   assert m and (m.group(3) in groups or m.group(3)=='DIRECT')
    if network=='udp' and int(m.group(1))==port and ip is not None and ip in ipaddress.ip_network(m.group(2)):return m.group(3)
    continue
   if kind=='MATCH':assert z[1] in groups;return z[1]
@@ -73,16 +80,24 @@ def route(host,network='tcp',port=443):
   else:raise AssertionError('Unexpected rule type '+kind)
   if match:return z[2]
  raise AssertionError('Missing final rule')
-cases={'www.hsbc.com.cn':'DIRECT','www.icbc.com.cn':'DIRECT','www.ccb.com':'DIRECT','www.boc.cn':'DIRECT','www.abchina.com':'DIRECT','www.cmbchina.com':'DIRECT','www.bankcomm.com':'DIRECT','www.hsbc.co.uk':'🏦 HSBC UK','www.hsbc.com.hk':'🏦 HSBC HK','www.interactivebrokers.com':'📈 IBKR','api.ibkr.com':'📈 IBKR','www.schwab.com':'📈 Schwab','www.longbridge.com':'📈 Longbridge','openapi.longportapp.com':'📈 Longbridge','www.binance.com':'🪙 Crypto','www.okx.com':'🪙 Crypto','www.tradingview.com':'🪙 Crypto','claude.ai':'🤖 AI','tello.com':'☎️ Tello','epdg.epc.mnc260.mcc310.pub.3gppnetwork.org':'☎️ Tello','apple.news':'📰 Apple News','news-client-search.apple.com':'📰 Apple News','gateway.icloud.com':'📰 Apple News','www.microsoft.com':'Ⓜ️ Microsoft','unlisted-routing-test-7d95.net':'🌍 海外默认'}
+cases={'www.hsbc.com.cn':'DIRECT','www.icbc.com.cn':'DIRECT','www.ccb.com':'DIRECT','www.boc.cn':'DIRECT','www.abchina.com':'DIRECT','www.cmbchina.com':'DIRECT','www.bankcomm.com':'DIRECT','www.hsbc.co.uk':'🏦 金融','www.hsbc.com.hk':'🏦 金融','www.interactivebrokers.com':'🏦 金融','api.ibkr.com':'🏦 金融','www.schwab.com':'🏦 金融','www.longbridge.com':'🏦 金融','openapi.longportapp.com':'🏦 金融','www.binance.com':'🪙 Crypto','www.okx.com':'🪙 Crypto','www.tradingview.com':'🪙 Crypto','claude.ai':'🤖 AI / X','tello.com':'DIRECT','epdg.epc.mnc260.mcc310.pub.3gppnetwork.org':'DIRECT','apple.news':'📰 Apple News','news-client-search.apple.com':'📰 Apple News','gateway.icloud.com':'📰 Apple News','www.microsoft.com':'DIRECT','unlisted-routing-test-7d95.net':'🌍 海外默认'}
+cases.update({h:'🤖 AI / X' for h in ['x.com','api.x.com','pbs.twimg.com','video.twimg.com','t.co','grok.com','x.ai','chatgpt.com','cdn.oaistatic.com','api.anthropic.com','gemini.google.com','generativelanguage.googleapis.com','aistudio.google.com','perplexity.ai','api.githubcopilot.com','cursor.com']})
+cases.update({'192.168.2.22':'DIRECT','api.deepseek.com':'DIRECT','www.bilibili.com':'DIRECT'})
 for host,want in cases.items():assert route(host)==want,(host,route(host),want)
-for port in [500,4500]:assert route('208.54.85.1','udp',port)=='☎️ Tello'
+for port in [500,4500]:assert route('208.54.85.1','udp',port)=='DIRECT'
 assert route('208.54.85.1','tcp',443)=='🌍 海外默认'
+dns_override=yaml.safe_load((ROOT/'dns/mihomo.yaml').read_text())
+assert '+.pub.3gppnetwork.org' in dns_override['dns']['fake-ip-filter']
+assert set(c['dns'])=={'default-nameserver','nameserver'}
 if args.mihomo_bin:
  with tempfile.TemporaryDirectory(prefix='public-rules-test-') as tmp:
   d=Path(tmp);fixture_config=dict(c);fixture_config['proxies']=fixture;fixture_config['mixed-port']=7890
   for name,provider,data,payload in loaded:
    dest=d/provider['path'];dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(data)
   path=d/'validation.yaml';path.write_text(yaml.safe_dump(fixture_config,allow_unicode=True,sort_keys=False))
+  subprocess.run([args.mihomo_bin,'-t','-d',tmp,'-f',str(path)],check=True)
+  fixture_config['dns'].update(dns_override['dns'])
+  path.write_text(yaml.safe_dump(fixture_config,allow_unicode=True,sort_keys=False))
   subprocess.run([args.mihomo_bin,'-t','-d',tmp,'-f',str(path)],check=True)
 print(f'PASS: {len(groups)} groups, {len(loaded)} remote rule sets, {len(cases)+3} routing checks; synthetic nodes only.')
 print('Tower can fall back to DIRECT for an empty node group. Check DMIT and Japan membership before every export.')

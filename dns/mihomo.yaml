@@ -1,0 +1,33 @@
+# 可选 Mihomo DNS 覆写片段：合并到已导出的配置，不能作为完整订阅。
+# Tower 当前不会无损保留这些字段。未自动安装到任何客户端。
+# 保留设备现有 dns.listen、TUN、IPv6 与其他 fake-ip-filter 例外。
+dns:
+  enable: true
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  proxy-server-nameserver:
+    - https://223.5.5.5/dns-query#DIRECT
+  nameserver:
+    - https://1.1.1.1/dns-query#🌍 海外默认
+    - https://8.8.8.8/dns-query#🌍 海外默认
+  fallback: [] # 清除塔台生成的旧fallback，避免继续使用它
+  direct-nameserver-follow-policy: false
+  direct-nameserver:
+    - https://223.5.5.5/dns-query#DIRECT
+  nameserver-policy:
+    "rule-set:cn,private,personal-direct":
+      - https://223.5.5.5/dns-query#DIRECT
+    "+.pub.3gppnetwork.org":
+      - https://223.5.5.5/dns-query#DIRECT
+    "+.wifi.t-mobile.com":
+      - https://223.5.5.5/dns-query#DIRECT
+  fake-ip-filter-mode: blacklist
+  fake-ip-filter:
+    - '*.lan'
+    - '+.local'
+    - '+.home.arpa'
+    - '+.msftconnecttest.com'
+    - '+.msftncsi.com'
+    - '+.pub.3gppnetwork.org'
+    - '+.wifi.t-mobile.com'
