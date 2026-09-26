@@ -1,0 +1,11 @@
+.DS_Store
+.venv/
+.cache/
+__pycache__/
+*.pem
+*.ppk
+*.p12
+*.private.*
+.env*
+source-cache/
+backups/

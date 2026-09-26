@@ -1,0 +1,381 @@
+# Tower 个性化规则模板；不含任何节点或订阅凭据。
+# 先在塔台启用机场和名称含 DMIT 的自有节点，再导入本文件。
+# 常用域名和业务目标在 rules 中修改；默认出口在 proxy-groups 的第一项修改。
+# 顶层文件修改后，在塔台重新导入此地址并重新导出。
+# 远程规则集内容更新与顶层模板更新是两件事，详见 README。
+# 塔台可能重建 DNS；Tello 的真实 IP/DNS 例外按 docs/tello.md 一次性核对。
+rules:
+- RULE-SET,private,DIRECT
+- IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+- IP-CIDR,100.64.0.0/10,DIRECT,no-resolve
+- IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
+- IP-CIDR,169.254.0.0/16,DIRECT,no-resolve
+- IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+- IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+- RULE-SET,hsbc-cn,DIRECT
+- DOMAIN-SUFFIX,hsbc.co.uk,🏦 HSBC UK
+- DOMAIN-SUFFIX,hsbc.com.hk,🏦 HSBC HK
+- RULE-SET,ibkr,📈 IBKR
+- RULE-SET,schwab,📈 Schwab
+- RULE-SET,longbridge,📈 Longbridge
+- RULE-SET,hsbc,🏦 海外银行
+- DOMAIN-SUFFIX,tradingview.com,🪙 Crypto
+- DOMAIN-SUFFIX,tradingview-widget.com,🪙 Crypto
+- DOMAIN-SUFFIX,tradingview.io,🪙 Crypto
+- DOMAIN-SUFFIX,tvcdn.com,🪙 Crypto
+- RULE-SET,binance,🪙 Crypto
+- RULE-SET,okx,🪙 Crypto
+- RULE-SET,category-cryptocurrency,🪙 Crypto
+- DOMAIN-SUFFIX,anthropic.com,🤖 AI
+- DOMAIN-SUFFIX,claude.ai,🤖 AI
+- DOMAIN-SUFFIX,claude.com,🤖 AI
+- DOMAIN-SUFFIX,claudeusercontent.com,🤖 AI
+- DOMAIN-SUFFIX,openai.com,🤖 AI
+- DOMAIN-SUFFIX,chatgpt.com,🤖 AI
+- DOMAIN-SUFFIX,oaistatic.com,🤖 AI
+- DOMAIN-SUFFIX,oaiusercontent.com,🤖 AI
+- DOMAIN-SUFFIX,tello.com,☎️ Tello
+- DOMAIN-SUFFIX,t-mobile.com,☎️ Tello
+- DOMAIN-SUFFIX,mnc240.mcc310.pub.3gppnetwork.org,☎️ Tello
+- DOMAIN-SUFFIX,mnc260.mcc310.pub.3gppnetwork.org,☎️ Tello
+- AND,((NETWORK,UDP),(DST-PORT,500),(IP-CIDR,208.54.0.0/16,no-resolve)),☎️ Tello
+- AND,((NETWORK,UDP),(DST-PORT,4500),(IP-CIDR,208.54.0.0/16,no-resolve)),☎️ Tello
+- DOMAIN-SUFFIX,apple.news,📰 Apple News
+- DOMAIN-SUFFIX,news.apple.com,📰 Apple News
+- DOMAIN-SUFFIX,news-client-search.apple.com,📰 Apple News
+- DOMAIN-SUFFIX,news-assets.apple.com,📰 Apple News
+- DOMAIN-SUFFIX,news-events.apple.com,📰 Apple News
+- DOMAIN-SUFFIX,news-edge.apple.com,📰 Apple News
+- DOMAIN-SUFFIX,news-todayconfig-edge.apple.com,📰 Apple News
+- DOMAIN-SUFFIX,news-sports-events.apple.com,📰 Apple News
+- DOMAIN-SUFFIX,news-client.apple.com,📰 Apple News
+- DOMAIN,gateway.icloud.com,📰 Apple News
+- RULE-SET,category-ads-all,🛑 广告拦截
+- RULE-SET,microsoft,Ⓜ️ Microsoft
+- RULE-SET,apple,🍎 Apple 其他
+- RULE-SET,cn,DIRECT
+- RULE-SET,cn-ip,DIRECT
+- MATCH,🌍 海外默认
+proxy-groups:
+- name: 🌍 海外默认
+  type: select
+  proxies:
+  - 🇺🇸 DMIT 专线
+  - 🇺🇸 美国节点
+  - 🇯🇵 日本节点
+  - 🇭🇰 香港节点
+  - 🇬🇧 英国节点
+  - 🇸🇬 新加坡节点
+  - 🌐 全部节点
+  - DIRECT
+  - REJECT
+- name: 🏦 券商默认
+  type: select
+  proxies:
+  - 🇺🇸 DMIT 专线
+  - 🇺🇸 美国节点
+  - 🇯🇵 日本节点
+  - 🇭🇰 香港节点
+  - 🇬🇧 英国节点
+  - 🇸🇬 新加坡节点
+  - 🌐 全部节点
+  - DIRECT
+  - REJECT
+- name: 📈 IBKR
+  type: select
+  proxies:
+  - 🏦 券商默认
+  - 🇺🇸 DMIT 专线
+  - 🇺🇸 美国节点
+  - 🇯🇵 日本节点
+  - 🇭🇰 香港节点
+  - 🇬🇧 英国节点
+  - 🇸🇬 新加坡节点
+  - 🌐 全部节点
+  - DIRECT
+  - REJECT
+- name: 📈 Schwab
+  type: select
+  proxies:
+  - 🏦 券商默认
+  - 🇺🇸 DMIT 专线
+  - 🇺🇸 美国节点
+  - 🇯🇵 日本节点
+  - 🇭🇰 香港节点
+  - 🇬🇧 英国节点
+  - 🇸🇬 新加坡节点
+  - 🌐 全部节点
+  - DIRECT
+  - REJECT
+- name: 📈 Longbridge
+  type: select
+  proxies:
+  - 🏦 券商默认
+  - 🇺🇸 DMIT 专线
+  - 🇺🇸 美国节点
+  - 🇯🇵 日本节点
+  - 🇭🇰 香港节点
+  - 🇬🇧 英国节点
+  - 🇸🇬 新加坡节点
+  - 🌐 全部节点
+  - DIRECT
+  - REJECT
+- name: 🏦 海外银行
+  type: select
+  proxies:
+  - 🇺🇸 DMIT 专线
+  - 🇺🇸 美国节点
+  - 🇯🇵 日本节点
+  - 🇭🇰 香港节点
+  - 🇬🇧 英国节点
+  - 🇸🇬 新加坡节点
+  - 🌐 全部节点
+  - DIRECT
+  - REJECT
+- name: 🏦 HSBC UK
+  type: select
+  proxies:
+  - 🏦 海外银行
+  - 🇺🇸 DMIT 专线
+  - 🇺🇸 美国节点
+  - 🇯🇵 日本节点
+  - 🇭🇰 香港节点
+  - 🇬🇧 英国节点
+  - 🇸🇬 新加坡节点
+  - 🌐 全部节点
+  - DIRECT
+  - REJECT
+- name: 🏦 HSBC HK
+  type: select
+  proxies:
+  - 🏦 海外银行
+  - 🇺🇸 DMIT 专线
+  - 🇺🇸 美国节点
+  - 🇯🇵 日本节点
+  - 🇭🇰 香港节点
+  - 🇬🇧 英国节点
+  - 🇸🇬 新加坡节点
+  - 🌐 全部节点
+  - DIRECT
+  - REJECT
+- name: 🪙 Crypto
+  type: select
+  proxies:
+  - 🇯🇵 日本节点
+  - 🇺🇸 DMIT 专线
+  - 🇺🇸 美国节点
+  - 🇭🇰 香港节点
+  - 🇬🇧 英国节点
+  - 🇸🇬 新加坡节点
+  - 🌐 全部节点
+  - DIRECT
+  - REJECT
+- name: 🤖 AI
+  type: select
+  proxies:
+  - 🇺🇸 DMIT 专线
+  - 🇺🇸 美国节点
+  - 🇯🇵 日本节点
+  - 🇭🇰 香港节点
+  - 🇬🇧 英国节点
+  - 🇸🇬 新加坡节点
+  - 🌐 全部节点
+  - DIRECT
+  - REJECT
+- name: ☎️ Tello
+  type: select
+  proxies:
+  - DIRECT
+  - 🇺🇸 DMIT 专线
+  - 🇺🇸 美国节点
+  - 🇯🇵 日本节点
+  - 🇭🇰 香港节点
+  - 🇬🇧 英国节点
+  - 🇸🇬 新加坡节点
+  - 🌐 全部节点
+  - REJECT
+- name: 📰 Apple News
+  type: select
+  proxies:
+  - 🇺🇸 DMIT 专线
+  - 🇺🇸 美国节点
+  - 🇯🇵 日本节点
+  - 🇭🇰 香港节点
+  - 🇬🇧 英国节点
+  - 🇸🇬 新加坡节点
+  - 🌐 全部节点
+  - DIRECT
+  - REJECT
+- name: 🍎 Apple 其他
+  type: select
+  proxies:
+  - 🌍 海外默认
+  - 🇺🇸 DMIT 专线
+  - 🇺🇸 美国节点
+  - 🇯🇵 日本节点
+  - 🇭🇰 香港节点
+  - 🇬🇧 英国节点
+  - 🇸🇬 新加坡节点
+  - 🌐 全部节点
+  - DIRECT
+  - REJECT
+- name: Ⓜ️ Microsoft
+  type: select
+  proxies:
+  - DIRECT
+  - 🇺🇸 DMIT 专线
+  - 🇺🇸 美国节点
+  - 🇯🇵 日本节点
+  - 🇭🇰 香港节点
+  - 🇬🇧 英国节点
+  - 🇸🇬 新加坡节点
+  - 🌐 全部节点
+  - REJECT
+- name: 🛑 广告拦截
+  type: select
+  proxies:
+  - REJECT
+  - DIRECT
+- name: 🇺🇸 美国节点
+  type: select
+  include-all: true
+  filter: (?i)(DMIT|美国|美國|洛杉矶|洛杉磯|United States|USA|🇺🇸|(^|[^A-Za-z])US([^A-Za-z]|$))
+- name: 🇯🇵 日本节点
+  type: select
+  include-all: true
+  filter: (?i)日本|🇯🇵|Japan|\bJP\b
+- name: 🇭🇰 香港节点
+  type: select
+  include-all: true
+  filter: (?i)香港|🇭🇰|Hong Kong|\bHK\b
+- name: 🇬🇧 英国节点
+  type: select
+  include-all: true
+  filter: (?i)英国|英國|🇬🇧|United Kingdom|\bUK\b
+- name: 🇸🇬 新加坡节点
+  type: select
+  include-all: true
+  filter: (?i)新加坡|狮城|獅城|🇸🇬|Singapore|\bSG\b
+- name: 🌐 全部节点
+  type: select
+  include-all: true
+  filter: .*
+- name: 🇺🇸 DMIT 专线
+  type: select
+  include-all: true
+  filter: (?i)(^|[^A-Za-z0-9])DMIT([^A-Za-z0-9]|$)
+rule-providers:
+  private:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.yaml
+    path: ./rule-cache/private.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  hsbc-cn:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/hsbc-cn.yaml
+    path: ./rule-cache/hsbc-cn.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  ibkr:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/ibkr.yaml
+    path: ./rule-cache/ibkr.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  schwab:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/schwab.yaml
+    path: ./rule-cache/schwab.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  longbridge:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/longbridge.yaml
+    path: ./rule-cache/longbridge.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  hsbc:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/hsbc.yaml
+    path: ./rule-cache/hsbc.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  binance:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/binance.yaml
+    path: ./rule-cache/binance.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  okx:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/okx.yaml
+    path: ./rule-cache/okx.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  category-cryptocurrency:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-cryptocurrency.yaml
+    path: ./rule-cache/category-cryptocurrency.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  category-ads-all:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ads-all.yaml
+    path: ./rule-cache/category-ads-all.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  apple:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple.yaml
+    path: ./rule-cache/apple.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  microsoft:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.yaml
+    path: ./rule-cache/microsoft.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  cn:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.yaml
+    path: ./rule-cache/cn.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  cn-ip:
+    type: http
+    behavior: ipcidr
+    format: yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.yaml
+    path: ./rule-cache/cn-ip.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+profile:
+  store-selected: true
