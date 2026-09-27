@@ -1,0 +1,6 @@
+# 可选，仅供 Mihomo/OpenClash 的前置规则覆写；不要导入塔台通用方案或 QX。
+# 将它们置于 MATCH 之前。仅保留历史 T-Mobile 网段的 UDP500/4500 辅助兜底。
+# 默认通用方案仍用 ePDG 域名 DIRECT；这不是 Tello 实机修复证明。
+prepend-rules:
+  - AND,((NETWORK,UDP),(DST-PORT,500),(IP-CIDR,208.54.0.0/16,no-resolve)),DIRECT
+  - AND,((NETWORK,UDP),(DST-PORT,4500),(IP-CIDR,208.54.0.0/16,no-resolve)),DIRECT

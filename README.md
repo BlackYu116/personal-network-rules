@@ -54,6 +54,14 @@ GitHub Raw是**读取地址**，不能在Raw页面保存修改。登录GitHub，
 
 自定义列表先于上游大集合；同一域名不要重复放进互相冲突的列表，尤其direct列表优先最高。公共上游数据库继续提供主要覆盖，自定义列表只补个人需求。新增域名不需要增加策略组。
 
+## Quantumult X 工具
+
+- [自己的资源解析器与Invalid response排查](docs/qx-resources.md)
+- [手动检查节点真实出口与质量](docs/node-quality.md)
+- [机场候选与现有订阅的分工](docs/provider-options.md)
+
+解析器Raw：`https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/qx/resource-parser.js`。解析器负责格式转换，出口检查是独立手动任务。通用模板已移除QX不支持的两条Tello AND规则，Mihomo需要时使用 `mihomo/tello-udp.yaml`。
+
 ## 首次设置和说明
 
 - [塔台设置、DMIT节点修复、更新与导出](docs/tower.md)
@@ -61,13 +69,13 @@ GitHub Raw是**读取地址**，不能在Raw页面保存修改。登录GitHub，
 - [Tello Wi-Fi Calling排查](docs/tello.md)
 - [Apple News：Quantumult X完整操作步骤](docs/apple-news-qx.md)
 
-开启“优先使用规则集”，关闭自动更新订阅及代理集合，保持“节点手动、规则自动”。当前Tower的QX导出会把这些YAML规则展开为静态行，需要塔台刷新并重新导出；Clash/Mihomo可以保留远程更新。更新顶层模板不等于更新子列表：当前Tower的“刷新规则”主要取子列表，顶层需要重新导入。
+开启“优先使用规则集”，关闭自动更新订阅及代理集合，保持“节点手动、规则自动”。当前Tower的QX导出会把这些YAML规则展开为静态行，需要塔台刷新并重新导出；Clash/Mihomo可以保留远程更新。QX也可按[资源指南](docs/qx-resources.md)把个人小列表单独引用，配合本解析器自动更新，但首次需要检查并去除重复静态规则。更新顶层模板不等于更新子列表：当前Tower的“刷新规则”主要取子列表，顶层需要重新导入。
 
 **导出前确认DMIT、日本组都有节点。** Tower当前可能把空组回退到DIRECT；删除机场后尤其要检查。客户端旧的持久化选择也可能覆盖新默认值。
 
 ## 验证与来源
 
-GitHub Actions用合成节点检查策略引用、上游规则可读性和47个分流场景。可选使用本地Mihomo检查基础配置及高级DNS片段；不需要私人节点或订阅。
+GitHub Actions用合成节点检查策略引用、上游规则可读性和47个分流场景，同时检查42项资源解析用例、节点体检脚本和解析器打包一致性。可选使用本地Mihomo检查基础配置及高级DNS片段；不需要私人节点或订阅。
 
 ```sh
 python -m pip install -r requirements.txt

@@ -9,8 +9,6 @@ rules:
 - RULE-SET,personal-crypto,🪙 Crypto
 - RULE-SET,personal-ai-x,🤖 AI / X
 - RULE-SET,personal-apple-news,📰 Apple News
-- AND,((NETWORK,UDP),(DST-PORT,500),(IP-CIDR,208.54.0.0/16,no-resolve)),DIRECT
-- AND,((NETWORK,UDP),(DST-PORT,4500),(IP-CIDR,208.54.0.0/16,no-resolve)),DIRECT
 - RULE-SET,hsbc-cn,DIRECT
 - RULE-SET,ibkr,🏦 金融
 - RULE-SET,schwab,🏦 金融

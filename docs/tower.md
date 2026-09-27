@@ -74,6 +74,6 @@ Apple News重写引用与MITM证书属于QX本机层，不由本仓库Clash模�
 
 当前Clash/Mihomo可保留本仓库domain YAML的远程引用，供客户端定期更新。当前Tower的QX导出会把这种YAML规则列表展开成本地规则，因此QX需要在塔台刷新规则后重新导出；不能承诺GitHub改完后QX自动同步。
 
-两条Tello UDP500/4500的AND规则是Mihomo侧的辅助兜底；QX当前转换会跳过并提示。QX继续依靠ePDG域名DIRECT，不能把跳过提示当作这两条IP规则已生效。家庭OpenClash的DNS/UDP问题也不会单靠手机规则修好。
+两条Tello UDP500/4500的AND规则已从通用模板移到 `mihomo/tello-udp.yaml`，塔台重新导入新版后不再需要尝试把它们转换成QX。QX继续依靠ePDG域名DIRECT；Mihomo用户如确有需要，可单独前置该片段。家庭OpenClash的DNS/UDP问题也不会单靠手机规则修好。
 
 此外Tower可能不保留rule-provider的下载代理字段。导出后检查规则资源下载状态；如果Raw下载失败，先解决客户端对GitHub Raw的可达性，不要把“已成功导入方案”等同于“全部规则集已成功下载”。

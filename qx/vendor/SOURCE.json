@@ -1,0 +1,9 @@
+{
+  "package": "js-yaml",
+  "version": "5.4.2",
+  "license": "MIT",
+  "source": "https://github.com/nodeca/js-yaml",
+  "npm_tarball": "https://registry.npmjs.org/js-yaml/-/js-yaml-5.4.2.tgz",
+  "npm_integrity": "sha512-m+aqu+LwO1O6sIopafj8HUVl5aawITwZQe/yHpMCKjaWBaA/d07B/QdMb3529REftiU+RMMHL3Vlsw3hON7vWg==",
+  "browser_sha256": "774fe802006763599e1faadd17d562ff781bb7849b66a42ac745f227d4833f02"
+}

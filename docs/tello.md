@@ -2,7 +2,7 @@
 
 已知场景：Tello在纯中国大陆网络的其他Wi-Fi下正常，连接有OpenClash接管的家庭Wi-Fi后失败。因此默认策略是DIRECT，不因为美国号码就强制走美国代理。
 
-本模板将Tello/T-Mobile相关域名直接设为DIRECT；历史T-Mobile地址范围的兜底仅匹配UDP500/4500，不把整个网段或所有IPsec流量无差别接管。
+本模板将Tello/T-Mobile相关域名直接设为DIRECT；历史T-Mobile地址范围的UDP500/4500辅助兜底已移到独立的 [Mihomo片段](../mihomo/tello-udp.yaml)，通用模板不再包含QX无法转换的AND规则。没有把整个网段或所有IPsec流量无差别接管。
 
 ## 一次性设备侧检查
 

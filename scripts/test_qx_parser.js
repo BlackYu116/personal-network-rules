@@ -1,0 +1,61 @@
+#!/usr/bin/env node
+'use strict';
+const fs=require('node:fs'), path=require('node:path'), vm=require('node:vm'), assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'..'), code=fs.readFileSync(path.join(root,'qx/resource-parser.js'),'utf8');
+function run(content, hash='', extra={}) {
+ let result, calls=0; const notifications=[];
+ const sandbox={$resource:{content,link:'https://subscription.invalid/resource'+hash,...extra},$done:r=>{calls++;result=r;},$notify:(...v)=>notifications.push(v)};
+ vm.runInNewContext(code,sandbox,{timeout:5000});assert.equal(calls,1);
+ return {result,notifications};
+}
+let count=0;
+function test(name,fn){fn();count++;console.log('PASS',name);}
+const uuid='00000000-0000-4000-8000-000000000001';
+const vless={name:'DMIT test',type:'vless',server:'203.0.113.10',port:24443,uuid,network:'tcp',udp:true,flow:'xtls-rprx-vision',tls:true,servername:'example.com','client-fingerprint':'chrome','packet-encoding':'xudp','reality-opts':{'public-key':'A'.repeat(43),'short-id':'0012'}};
+const anytls={name:'日本 test',type:'anytls',server:'203.0.113.11',port:443,password:'synthetic-only',sni:'example.com',udp:true,alpn:['h2'],'client-fingerprint':'chrome','idle-session-timeout':30};
+const ss={name:'SS test',type:'ss',server:'203.0.113.12',port:443,password:'synthetic-only',cipher:'aes-128-gcm',plugin:'obfs','plugin-opts':{mode:'http',host:'example.com'},udp:false};
+const parseNode=(n,hash='')=>run(JSON.stringify({proxies:[n]}),hash).result;
+function error(result,code){assert.ok(result.error&&result.error.startsWith('['+code+']'),JSON.stringify(result));assert.equal(result.content,undefined);}
+test('JSON VLESS Reality Vision and leading-zero short-id',()=>{const r=parseNode(vless);assert.ok(r.content.includes('reality-hex-shortid=0012'));assert.ok(r.content.includes('vless-flow=xtls-rprx-vision'));assert.ok(r.content.includes('obfs-host=example.com'));assert.ok(r.content.includes('fast-open=false'));assert.ok(!r.content.includes('client-fingerprint'));});
+test('AnyTLS ALPN and TLS enabled',()=>{const r=parseNode(anytls);assert.ok(r.content.startsWith('anytls='));assert.ok(r.content.includes('tls-host=example.com'));assert.ok(r.content.includes('tls-alpn=026832'));assert.ok(r.content.includes('tls-verification=true'));});
+test('SS simple-obfs and false UDP preserved',()=>{const r=parseNode(ss);assert.ok(r.content.includes('obfs=http'));assert.ok(r.content.includes('udp-relay=false'));});
+test('YAML block and flow syntax',()=>{const r=run('proxies:\n  - {name: Test, type: ss, server: 203.0.113.1, port: 443, cipher: aes-128-gcm, password: synthetic-only}').result;assert.ok(r.content.startsWith('shadowsocks='));});
+test('Airport config extracts nodes without injecting its rules',()=>{const r=run(JSON.stringify({proxies:[ss],rules:['MATCH,DIRECT'],dns:{nameserver:['8.8.8.8']}})).result;assert.ok(r.content.startsWith('shadowsocks='));assert.ok(!r.content.includes('MATCH'));});
+test('IPv6 bracket address',()=>assert.ok(parseNode({...anytls,server:'2001:db8::1'}).content.startsWith('anytls=[2001:db8::1]:443')));
+test('No silent transport downgrade',()=>error(parseNode({...vless,network:'grpc'}),'TRANSPORT'));
+test('No silent unsupported protocol skip',()=>error(parseNode({...ss,type:'hysteria2'}),'PROTOCOL'));
+test('No silent security-pin loss',()=>error(parseNode({...anytls,'certificate':'SENSITIVE_TEST_VALUE'}),'NODE_OPTION'));
+test('No raw input in parse errors',()=>{const r=run('proxies: [ SENSITIVE_TEST_VALUE\n:').result;error(r,'YAML');assert.ok(!JSON.stringify(r).includes('SENSITIVE_TEST_VALUE'));});
+test('TLS insecure source requires explicit opt-in',()=>error(parseNode({...anytls,'skip-cert-verify':true}),'INSECURE_TLS'));
+test('TLS opt-in only preserves source false-verification',()=>{assert.ok(parseNode({...anytls,'skip-cert-verify':true},'#allow-insecure=1').content.includes('tls-verification=false'));assert.ok(parseNode(anytls,'#allow-insecure=1').content.includes('tls-verification=true'));});
+test('Credential separator rejected rather than altered',()=>error(parseNode({...ss,password:'bad, tag=attack'}),'FIELD'));
+test('Duplicate node names fail visibly',()=>error(run(JSON.stringify({proxies:[ss,ss]})).result,'DUPLICATE'));
+test('Labels normalized without credential modification',()=>assert.ok(parseNode({...ss,name:'US, name\n'}).content.endsWith('tag=US  name')));
+test('Unsupported SS plugin rejected',()=>error(parseNode({...ss,plugin:'shadow-tls'}),'PLUGIN'));
+test('Malformed Reality short-id rejected',()=>error(parseNode({...vless,'reality-opts':{'public-key':'A'.repeat(43),'short-id':12}}),'REALITY'));
+test('HTML rejected with sanitized diagnostic',()=>error(run('<!DOCTYPE html><html>PRIVATE_TOKEN</html>').result,'HTML'));
+test('Empty response rejected',()=>error(run(' ').result,'EMPTY'));
+test('Full QX config is not a resource',()=>error(run('[general]\nserver_check_url=https://example.com\n[server_local]\nanytls=example.com:443').result,'FULL_CONFIG'));
+test('Tower template cannot become server or rule resource',()=>error(run(fs.readFileSync(path.join(root,'tower.yaml'),'utf8')).result,'FULL_CONFIG'));
+test('Native QX resources pass unchanged',()=>{const v='anytls=example.com:443, password=synthetic, over-tls=true, tag=A';assert.equal(run(v).result.content,v);});
+test('QX native filter pass-through',()=>{const s='host-suffix, example.com, proxy';assert.equal(run(s).result.content,s);});
+test('Domain payload exact and suffix and wildcard',()=>{const r=run('payload:\n- +.example.com\n- api.example.org\n- "*.example.net"','#policy=Test').result;assert.equal(r.content,'host-suffix, example.com, Test\nhost, api.example.org, Test\nhost-wildcard, *.example.net, Test');});
+test('IP payload for remote China/private rule sets',()=>assert.equal(run('payload:\n- 10.0.0.0/8\n- fc00::/7','#policy=direct').result.content,'ip-cidr, 10.0.0.0/8, direct\nip6-cidr, fc00::/7, direct'));
+test('Clash logical/classical lines cannot become domains',()=>error(run('payload:\n- AND,((NETWORK,UDP),(DST-PORT,500)),DIRECT').result,'RULE'));
+test('Resource type mismatch rejected',()=>error(run(JSON.stringify({proxies:[ss]}),'#type=filter').result,'RESOURCE_TYPE'));
+test('VLESS URI flow and Reality',()=>{const r=run('vless://'+uuid+'@203.0.113.1:443?type=tcp&security=reality&sni=example.com&pbk='+('A'.repeat(43))+'&sid=0012&flow=xtls-rprx-vision#Test').result;assert.ok(r.content.includes('vless-flow=xtls-rprx-vision'));});
+test('SS SIP002 userinfo base64',()=>{const a=Buffer.from('aes-128-gcm:synthetic-only').toString('base64');assert.ok(run('ss://'+a+'@203.0.113.1:443#Test').result.content.includes('password=synthetic-only'));});
+test('Base64 URI subscription',()=>{const u='trojan://synthetic@example.com:443?sni=example.com#Test';assert.ok(run(Buffer.from(u).toString('base64')).result.content.startsWith('trojan='));});
+test('Unknown URI security parameter rejected',()=>error(run('vless://'+uuid+'@203.0.113.1:443?security=reality&ech=secret').result,'URI_OPTION'));
+test('One optional native UA retry, with old-client fallback',()=>{const r=run('<html>403</html>','#ua=clash').result;error(r,'HTML');assert.equal(r.retry.user_agent,'clash.meta');assert.equal(run('<html>403</html>','#ua=clash',{user_agent:'clash.meta'}).result.retry,undefined);});
+test('Unknown parser option errors',()=>error(run(JSON.stringify({proxies:[ss]}),'#random=1').result,'OPTION'));
+test('No network or storage calls in original core',()=>{const s=fs.readFileSync(path.join(root,'qx/parser-core.js'),'utf8');assert.ok(!/\$task|\$httpClient|\$prefs|\$configuration|\beval\s*\(/.test(s));});
+test('All personal rules convert with policy binding',()=>{for(const f of fs.readdirSync(path.join(root,'rules')).filter(x=>x.endsWith('.yaml'))){const r=run(fs.readFileSync(path.join(root,'rules',f),'utf8'),'#policy=Test').result;assert.ok(r.content,f+': '+r.error);}});
+test('Legacy SS base64 does not decode percent credentials twice',()=>{const u=Buffer.from('aes-128-gcm:p%25word@203.0.113.1:443').toString('base64');assert.ok(run('ss://'+u+'#Test').result.content.includes('password=p%25word,'));});
+test('Native and base64 native honor explicit resource type',()=>{const u='anytls=example.com:443, password=test, over-tls=true, tag=A';error(run(u,'#type=filter').result,'RESOURCE_TYPE');error(run(Buffer.from(u).toString('base64'),'#type=filter').result,'RESOURCE_TYPE');error(run('host, example.com, proxy','#type=server').result,'RESOURCE_TYPE');});
+test('SS URI unknown query rejected',()=>error(run('ss://aes-128-gcm:test@203.0.113.1:443?uot=1#Test').result,'URI_OPTION'));
+test('Malformed IP payload rejected',()=>{for(const p of ['abcd:12345::/64','abcd.abcd.abcd.abcd/32',':::1/128','1.2.3.999/32','2001:db8::1/129'])error(run('payload:\n- '+p).result,'RULE');});
+test('Supported IPv6 and IPv4 CIDR boundaries',()=>{for(const p of ['::/0','2001:db8::1/128','::ffff:192.0.2.1/128','255.255.255.255/32'])assert.ok(run('payload:\n- '+p).result.content);});
+test('Metadata placeholders omitted without losing real nodes',()=>{const a=[{...ss,name:'Traffic: 1 GB | 2 GB'},{...ss,name:'当前流量：1G / 2G'},{...ss,name:'Expire: example'},ss];assert.equal(run(JSON.stringify({proxies:a})).result.content.split('\n').length,1);});
+test('Unknown field names never leak into errors',()=>{const r=parseNode({...anytls,SENSITIVE_IN_KEY:'value'});error(r,'NODE_OPTION');assert.ok(!JSON.stringify(r).includes('SENSITIVE_IN_KEY'));});
+console.log('PASS:',count,'parser checks; synthetic fixtures only');

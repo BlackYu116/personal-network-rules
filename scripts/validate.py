@@ -84,7 +84,10 @@ cases={'www.hsbc.com.cn':'DIRECT','www.icbc.com.cn':'DIRECT','www.ccb.com':'DIRE
 cases.update({h:'🤖 AI / X' for h in ['x.com','api.x.com','pbs.twimg.com','video.twimg.com','t.co','grok.com','x.ai','chatgpt.com','cdn.oaistatic.com','api.anthropic.com','gemini.google.com','generativelanguage.googleapis.com','aistudio.google.com','perplexity.ai','api.githubcopilot.com','cursor.com']})
 cases.update({'192.168.2.22':'DIRECT','api.deepseek.com':'DIRECT','www.bilibili.com':'DIRECT'})
 for host,want in cases.items():assert route(host)==want,(host,route(host),want)
-for port in [500,4500]:assert route('208.54.85.1','udp',port)=='DIRECT'
+assert not any(x.startswith('AND,') for x in c['rules']), 'Tower common template must not contain QX-incompatible logical rules'
+for port in [500,4500]:assert route('208.54.85.1','udp',port)=='🌍 海外默认'
+extra=yaml.safe_load((ROOT/'mihomo/tello-udp.yaml').read_text())['prepend-rules']
+assert len(extra)==2 and all(x.startswith('AND,') and x.endswith(',DIRECT') for x in extra)
 assert route('208.54.85.1','tcp',443)=='🌍 海外默认'
 dns_override=yaml.safe_load((ROOT/'dns/mihomo.yaml').read_text())
 assert '+.pub.3gppnetwork.org' in dns_override['dns']['fake-ip-filter']
@@ -97,6 +100,7 @@ if args.mihomo_bin:
   path=d/'validation.yaml';path.write_text(yaml.safe_dump(fixture_config,allow_unicode=True,sort_keys=False))
   subprocess.run([args.mihomo_bin,'-t','-d',tmp,'-f',str(path)],check=True)
   fixture_config['dns'].update(dns_override['dns'])
+  fixture_config['rules']=extra+fixture_config['rules']
   path.write_text(yaml.safe_dump(fixture_config,allow_unicode=True,sort_keys=False))
   subprocess.run([args.mihomo_bin,'-t','-d',tmp,'-f',str(path)],check=True)
 print(f'PASS: {len(groups)} groups, {len(loaded)} remote rule sets, {len(cases)+3} routing checks; synthetic nodes only.')
