@@ -181,7 +181,7 @@
     return 'host, ' + domain(v) + ', ' + policy;
   }
   function domain(s) {
-    if (!/^(?:[a-z0-9_](?:[a-z0-9_-]*[a-z0-9_])?\.)*[a-z0-9_](?:[a-z0-9_-]*[a-z0-9_])?$/i.test(s) || !s.includes('.')) fail('RULE', '不是支持的域名/IP payload；不要把完整 tower.yaml 或 classical 逻辑规则放进来');
+    if (!/^(?:[a-z0-9_](?:[a-z0-9_-]*[a-z0-9_])?\.)*[a-z0-9_](?:[a-z0-9_-]*[a-z0-9_])?$/i.test(s) || /^(MATCH|FINAL|DIRECT|REJECT|AND|OR|NOT|RULE-SET)$/i.test(s)) fail('RULE', '不是支持的域名/IP payload；不要把完整 tower.yaml 或 classical 逻辑规则放进来');
     return s;
   }
   function nativeText(text, opts) {

@@ -58,4 +58,6 @@ test('Malformed IP payload rejected',()=>{for(const p of ['abcd:12345::/64','abc
 test('Supported IPv6 and IPv4 CIDR boundaries',()=>{for(const p of ['::/0','2001:db8::1/128','::ffff:192.0.2.1/128','255.255.255.255/32'])assert.ok(run('payload:\n- '+p).result.content);});
 test('Metadata placeholders omitted without losing real nodes',()=>{const a=[{...ss,name:'Traffic: 1 GB | 2 GB'},{...ss,name:'当前流量：1G / 2G'},{...ss,name:'Expire: example'},ss];assert.equal(run(JSON.stringify({proxies:a})).result.content.split('\n').length,1);});
 test('Unknown field names never leak into errors',()=>{const r=parseNode({...anytls,SENSITIVE_IN_KEY:'value'});error(r,'NODE_OPTION');assert.ok(!JSON.stringify(r).includes('SENSITIVE_IN_KEY'));});
+test('Single-label domains and TLD suffixes are valid QX rules',()=>{const r=run('payload:\n- +.lan\n- +.hsbc\n- +.cn\n- localhost','#policy=direct').result;assert.equal(r.content,'host-suffix, lan, direct\nhost-suffix, hsbc, direct\nhost-suffix, cn, direct\nhost, localhost, direct');});
+test('Control keywords are not domain payload entries',()=>{for(const x of ['MATCH','FINAL','AND','RULE-SET'])error(run('payload:\n- '+x).result,'RULE');});
 console.log('PASS:',count,'parser checks; synthetic fixtures only');
