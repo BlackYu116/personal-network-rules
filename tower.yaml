@@ -1,15 +1,17 @@
-# 8 个手选组；节点只在塔台维护。
-# 日常添加域名：编辑 rules/ 下的小文件。改变组/优先级后重新导入本模板。
-# DNS 地址见文档；高级 DNS 覆写不由塔台无损透传。
+# 通用个人分流：只依赖业务组，不依赖机场、节点品牌或地区名称。
+# 首次导入必须手选“海外默认”和“Crypto”的节点；初始REJECT是有意设置。
+# 金融与AI/X默认跟随海外默认，也可分别固定到任意启用节点。
+# 节点只在塔台维护；日常例外编辑rules/中的小文件。
+# 规则边界与优先级见docs/routing-design.md。
 rules:
 - RULE-SET,private,DIRECT
 - RULE-SET,private-ip,DIRECT,no-resolve
 - RULE-SET,personal-direct,DIRECT
+- RULE-SET,hsbc-cn,DIRECT
+- RULE-SET,personal-proxy,🌍 海外默认
 - RULE-SET,personal-finance,🏦 金融
 - RULE-SET,personal-crypto,🪙 Crypto
 - RULE-SET,personal-ai-x,🤖 AI / X
-- RULE-SET,personal-apple-news,📰 Apple News
-- RULE-SET,hsbc-cn,DIRECT
 - RULE-SET,ibkr,🏦 金融
 - RULE-SET,schwab,🏦 金融
 - RULE-SET,longbridge,🏦 金融
@@ -17,8 +19,7 @@ rules:
 - RULE-SET,category-cryptocurrency,🪙 Crypto
 - RULE-SET,category-ai-!cn,🤖 AI / X
 - RULE-SET,twitter,🤖 AI / X
-- RULE-SET,category-ads-all,REJECT
-- RULE-SET,microsoft,DIRECT
+- RULE-SET,category-ads-all,🛑 广告过滤
 - RULE-SET,cn,DIRECT
 - RULE-SET,cn-ip,DIRECT
 - MATCH,🌍 海外默认
@@ -26,56 +27,49 @@ proxy-groups:
 - name: 🌍 海外默认
   type: select
   proxies:
-  - 🇺🇸 DMIT 专线
-  - 🇯🇵 日本节点
-  - 🌐 全部节点
-  - DIRECT
   - REJECT
+  - DIRECT
+  include-all: true
+  filter: .*
 - name: 🏦 金融
   type: select
   proxies:
-  - 🇺🇸 DMIT 专线
-  - 🇯🇵 日本节点
-  - 🌐 全部节点
-  - DIRECT
+  - 🌍 海外默认
   - REJECT
+  - DIRECT
+  include-all: true
+  filter: .*
 - name: 🪙 Crypto
   type: select
   proxies:
-  - 🇯🇵 日本节点
-  - 🇺🇸 DMIT 专线
-  - 🌐 全部节点
-  - DIRECT
   - REJECT
+  - 🌍 海外默认
+  - DIRECT
+  include-all: true
+  filter: .*
 - name: 🤖 AI / X
   type: select
   proxies:
-  - 🇺🇸 DMIT 专线
-  - 🇯🇵 日本节点
-  - 🌐 全部节点
-  - DIRECT
+  - 🌍 海外默认
   - REJECT
-- name: 📰 Apple News
-  type: select
-  proxies:
-  - 🇺🇸 DMIT 专线
-  - 🇯🇵 日本节点
-  - 🌐 全部节点
   - DIRECT
-  - REJECT
-- name: 🇺🇸 DMIT 专线
-  type: select
-  include-all: true
-  filter: (?i)(^|[^A-Za-z0-9])DMIT([^A-Za-z0-9]|$)
-- name: 🇯🇵 日本节点
-  type: select
-  include-all: true
-  filter: (?i)日本|🇯🇵|Japan|\bJP\b
-- name: 🌐 全部节点
-  type: select
   include-all: true
   filter: .*
+- name: 🛑 广告过滤
+  type: select
+  proxies:
+  - REJECT
+  - 🌍 海外默认
+  - DIRECT
 rule-providers:
+  private:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.yaml
+    path: ./rule-cache/private.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
   private-ip:
     type: http
     behavior: ipcidr
@@ -90,6 +84,22 @@ rule-providers:
     format: yaml
     url: https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/rules/direct.yaml
     path: ./rule-cache/personal-direct.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  hsbc-cn:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/hsbc-cn.yaml
+    path: ./rule-cache/hsbc-cn.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  personal-proxy:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/rules/proxy.yaml
+    path: ./rule-cache/personal-proxy.yaml
     interval: 86400
     proxy: 🌍 海外默认
   personal-finance:
@@ -114,30 +124,6 @@ rule-providers:
     format: yaml
     url: https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/rules/ai-x.yaml
     path: ./rule-cache/personal-ai-x.yaml
-    interval: 86400
-    proxy: 🌍 海外默认
-  personal-apple-news:
-    type: http
-    behavior: domain
-    format: yaml
-    url: https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/rules/apple-news.yaml
-    path: ./rule-cache/personal-apple-news.yaml
-    interval: 86400
-    proxy: 🌍 海外默认
-  private:
-    type: http
-    behavior: domain
-    format: yaml
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.yaml
-    path: ./rule-cache/private.yaml
-    interval: 86400
-    proxy: 🌍 海外默认
-  hsbc-cn:
-    type: http
-    behavior: domain
-    format: yaml
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/hsbc-cn.yaml
-    path: ./rule-cache/hsbc-cn.yaml
     interval: 86400
     proxy: 🌍 海外默认
   ibkr:
@@ -204,14 +190,6 @@ rule-providers:
     path: ./rule-cache/category-ads-all.yaml
     interval: 86400
     proxy: 🌍 海外默认
-  microsoft:
-    type: http
-    behavior: domain
-    format: yaml
-    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.yaml
-    path: ./rule-cache/microsoft.yaml
-    interval: 86400
-    proxy: 🌍 海外默认
   cn:
     type: http
     behavior: domain
@@ -230,7 +208,7 @@ rule-providers:
     proxy: 🌍 海外默认
 profile:
   store-selected: true
-# 塔台能保存的基础 DNS 地址；高级的分域名解析见 dns/mihomo.yaml。
+# 基础DNS地址；分域名DNS/Fake-IP覆写见dns/mihomo.yaml。
 dns:
   default-nameserver:
     - 223.5.5.5

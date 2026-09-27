@@ -95,7 +95,7 @@ https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/qx/reso
 https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/rules/ai-x.yaml#policy=proxy, tag=个人AI-X, force-policy=🤖 AI / X, opt-parser=true, update-interval=86400, enabled=true
 ```
 
-它会将payload转换成QX原生规则，再由 `force-policy` 绑定现有业务组。其他对应关系为 `direct.yaml → direct`、`finance.yaml → 🏦 金融`、`crypto.yaml → 🪙 Crypto`、`apple-news.yaml → 📰 Apple News`。
+它会将payload转换成QX原生规则，再由 `force-policy` 绑定现有业务组。其他对应关系为 `direct.yaml → direct`、`finance.yaml → 🏦 金融`、`crypto.yaml → 🪙 Crypto`、`proxy.yaml → 🌍 海外默认`。
 
 **不要不检查就叠加到旧静态规则上。** 需要在QX查看匹配顺序，并移除旧配置中与该个人列表重复的静态条目；否则“GitHub删掉了域名，本机旧行仍生效”。首次过渡建议仍使用塔台刷新导出；确认对应规则资源独立生效后，再将这几个小列表转为日常自动更新。本次没有改你的现有配置，也没有擅自搬迁规则优先级。
 

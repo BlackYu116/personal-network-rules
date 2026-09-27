@@ -1,3 +1,4 @@
+# 历史兼容资源：当前通用tower.yaml不再引用，保留URL避免破坏旧导出。
 # 精确域名直接写；域名及其全部子域名使用 +.example.com。
 payload:
 - +.apple.news

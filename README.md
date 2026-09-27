@@ -1,81 +1,74 @@
 # Personal Network Rules
 
-**塔台管节点，GitHub管分流。** 公开仓库只放规则，不含机场订阅、节点凭据或证书。
+**只维护业务分流，不绑定VPS、机场、节点名称或国家标签。** 节点来源由塔台管理；GitHub保存个人例外、上游规则引用和策略关系，不保存节点凭据。
 
-## 导入地址
+## 导入
 
-在塔台「规则 → 导入」中使用：
+在塔台「规则 → 导入」使用：
 
 ```text
 https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/tower.yaml
 ```
 
-这是规则方案，不是带节点的订阅。先启用自己的机场和DMIT节点；DMIT名称保留 `DMIT` 字样。
+这是规则方案，不是含节点的订阅。先在塔台启用并勾选你的节点，再导入规则并按客户端导出。
 
-## 精简后的默认分流
+**首次使用必须做两次选择：**在“🌍 海外默认”选日常出口，在“🪙 Crypto”选Crypto出口（按目前偏好手选实测日本节点）。两组初始均为REJECT，不会根据节点名字猜测实际国家，也不会自动挑选某个机场。选完后更新规则资源；客户端支持时会保存选择。旧客户端持久选择可能覆盖文件首项，迁移时应检查。
 
-从22个组减少为8个组：5个业务组、3个节点选择组。
+## 五个通用策略组
 
-| 业务组 | 默认出口 |
-|---|---|
-| 🌍 海外默认 | DMIT |
-| 🏦 金融：海外银行、IBKR、Schwab、Longbridge | DMIT |
-| 🪙 Crypto：币安、OKX、TradingView等 | 日本手选节点 |
-| 🤖 AI / X：Claude、ChatGPT、Gemini、Grok、Perplexity、Copilot、Cursor、X等 | DMIT |
-| 📰 Apple News | DMIT；地区判定另见指南 |
-
-其余3组为 `🇺🇸 DMIT 专线`、`🇯🇵 日本节点`、`🌐 全部节点`。其他国家的线路在“全部节点”中选择，不再为每个国家或每家银行创建单独组。业务组仍可手选其他节点组、DIRECT或REJECT；不自动轮换账户出口。
-
-国内银行、HSBC China、国内网站、内网与Tello直连。Microsoft通用服务保留原先直连默认，境外AI专用域名规则排在它前面。广告规则直接REJECT。Apple普通服务按国内/海外分流，无独立组。
-
-## 日常只改这些地方
-
-| 想改什么 | 编辑位置 | 如何生效 |
+| 组 | 初始选择 | 用途 |
 |---|---|---|
-| 换机场、增减机场 | 塔台订阅 | 手动更新节点，重新导出 |
-| 临时换出口 | 客户端业务组／全部节点 | 手动选择 |
-| 必须直连的域名 | [rules/direct.yaml](rules/direct.yaml) | 兼容远程规则的客户端每日更新 |
-| 海外银行／券商域名 | [rules/finance.yaml](rules/finance.yaml) | 同上 |
-| Crypto／TradingView域名 | [rules/crypto.yaml](rules/crypto.yaml) | 同上 |
-| AI或X的补充域名 | [rules/ai-x.yaml](rules/ai-x.yaml) | 同上 |
-| Apple News域名 | [rules/apple-news.yaml](rules/apple-news.yaml) | 同上 |
-| 策略组、优先级、默认出口、基础DNS地址 | [tower.yaml](tower.yaml) | 塔台重新导入同一URL，再导出 |
-| Mihomo分域名DNS／Fake-IP例外 | [dns/mihomo.yaml](dns/mihomo.yaml) | 合并到目标客户端的DNS覆写；Tower不无损透传 |
+| 🌍 海外默认 | REJECT，首次手选节点 | 其他境外流量、个人强制代理例外 |
+| 🏦 金融 | 海外默认 | HSBC境外业务、IBKR、Schwab、Longbridge；也可单独固定节点 |
+| 🪙 Crypto | REJECT，首次手选节点 | Binance、OKX、TradingView及其他Crypto |
+| 🤖 AI / X | 海外默认 | 境外AI和X；也可单独固定节点 |
+| 🛑 广告过滤 | REJECT | 可临时改选海外默认或DIRECT排查误杀 |
 
-GitHub Raw是**读取地址**，不能在Raw页面保存修改。登录GitHub，打开对应文件 → 铅笔“Edit” → Commit changes。等Actions通过后，原Raw链接即指向新版本（可能有短暂缓存）。
+前四组可直接选择当前启用的任意节点。更换机场或停用自有VPS，不需要改分流规则；重新导出节点后检查旧选项是否仍存在。没有国家组、供应商品牌过滤或自动测速轮换。国内银行、国内网站、内网和Tello指定域名仍直连。
 
-例如在 `rules/ai-x.yaml` 的 `payload:` 下新增：
+Apple News不再单独分组，没有强制 `gateway.icloud.com` 的特殊路由。Microsoft也不再整家公司一律直连：已有国内分类走直连，其余按海外规则处理；其AI服务优先进入AI组。历史News文档及旧规则URL暂留以兼容旧导出，新模板不引用。
 
-```yaml
-- +.example.com
-```
+## 日常只维护少量例外
 
-`+.example.com`匹配主域和所有子域；`api.example.com`只匹配该精确域名。不填协议、路径、端口或策略名。不要把整个 `google.com`、`cloudflare.com`、`amazonaws.com`为了某个AI服务一并纳入；添加专用域名即可。
+| 需求 | 修改文件 |
+|---|---|
+| 强制直连 | [rules/direct.yaml](rules/direct.yaml) |
+| 强制使用海外默认 | [rules/proxy.yaml](rules/proxy.yaml) |
+| 金融专用域名补充 | [rules/finance.yaml](rules/finance.yaml) |
+| Crypto/TradingView补充 | [rules/crypto.yaml](rules/crypto.yaml) |
+| AI/X补充 | [rules/ai-x.yaml](rules/ai-x.yaml) |
+| 策略关系、顺序、基础DNS | [tower.yaml](tower.yaml) |
 
-自定义列表先于上游大集合；同一域名不要重复放进互相冲突的列表，尤其direct列表优先最高。公共上游数据库继续提供主要覆盖，自定义列表只补个人需求。新增域名不需要增加策略组。
+在GitHub文件页点铅笔编辑并提交。Raw是读取地址，不能在Raw页面保存修改。`+.example.com`匹配主域及子域；`api.example.com`只匹配精确域名。文件中不写节点名称、订阅URL、证书或密码。
+
+个人例外位于通用数据库前，直连例外优先于强制代理例外。不要把同一域名同时放进相反列表。业务分类使用一个统一上游数据库，个人文件只补需求，不同时堆叠多套中国域名库或广告库。
+
+## 规则逻辑
+
+优先级为：内网 → 明确直连及HSBC China → 明确海外例外 → 个人业务例外 → 金融/Crypto/AI/X上游分类 → 可切换广告过滤 → 国内域名/IP → 海外默认。
+
+业务分类优先于通用广告库，是考虑账户登录和交易功能的稳定性；这可能放行属于业务域名的部分追踪请求。广告误杀优先用少量明确例外修正，广告组临时放行用于排查。完整理由、ACL4SSR对照及限制见[规则设计](docs/routing-design.md)。
+
+## 塔台与客户端
+
+- 节点保持手动更新，代理集合关闭；“优先使用规则集”开启。
+- 改个人子列表：保留远程引用的客户端可每天更新；被展开为静态行的配置需刷新重导。
+- 改组、基础DNS或规则顺序：塔台重新导入模板并重新导出。
+- “通用”指规则与节点来源解耦，不代表Clash、QX、Shadowrocket的原生语法完全相同。分别导出并检查兼容提示。
+
+[塔台导入与迁移](docs/tower.md) · [DNS边界](docs/dns.md) · [Tello](docs/tello.md) · [QX远程规则与文件体积](docs/qx-remote-rules.md)
 
 ## Quantumult X 工具
 
-- [自己的资源解析器与Invalid response排查](docs/qx-resources.md)
-- [手动检查节点真实出口与质量](docs/node-quality.md)
+- [资源解析器与Invalid response排查](docs/qx-resources.md)
+- [节点出口体检与优选方法](docs/node-quality.md)
 - [机场候选与现有订阅的分工](docs/provider-options.md)
 
-解析器Raw：`https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/qx/resource-parser.js`。解析器负责格式转换，出口检查是独立手动任务。通用模板已移除QX不支持的两条Tello AND规则，Mihomo需要时使用 `mihomo/tello-udp.yaml`。
-
-## 首次设置和说明
-
-- [塔台设置、DMIT节点修复、更新与导出](docs/tower.md)
-- [DNS怎样集中维护，以及Tower的边界](docs/dns.md)
-- [Tello Wi-Fi Calling排查](docs/tello.md)
-- [Apple News：Quantumult X完整操作步骤](docs/apple-news-qx.md)
-
-开启“优先使用规则集”，关闭自动更新订阅及代理集合，保持“节点手动、规则自动”。当前Tower的QX导出会把这些YAML规则展开为静态行，需要塔台刷新并重新导出；Clash/Mihomo可以保留远程更新。QX也可按[资源指南](docs/qx-resources.md)把个人小列表单独引用，配合本解析器自动更新，但首次需要检查并去除重复静态规则。更新顶层模板不等于更新子列表：当前Tower的“刷新规则”主要取子列表，顶层需要重新导入。
-
-**导出前确认DMIT、日本组都有节点。** Tower当前可能把空组回退到DIRECT；删除机场后尤其要检查。客户端旧的持久化选择也可能覆盖新默认值。
+解析器地址：`https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/qx/resource-parser.js`。
 
 ## 验证与来源
 
-GitHub Actions用合成节点检查策略引用、上游规则可读性和47个分流场景，同时检查42项资源解析用例、节点体检脚本和解析器打包一致性。可选使用本地Mihomo检查基础配置及高级DNS片段；不需要私人节点或订阅。
+GitHub Actions检查分流场景、策略引用、任意命名节点、空节点池、资源解析器及手动体检脚本。测试不需要私人订阅。可用本地Mihomo额外校验基础配置和可选DNS/UDP片段。
 
 ```sh
 python -m pip install -r requirements.txt
@@ -83,6 +76,6 @@ python scripts/validate.py
 python scripts/validate.py --mihomo-bin /path/to/mihomo
 ```
 
-结构与分流测试不代表金融登录、Tello通话或Apple News已经在设备验收。
+借鉴[ACL4SSR在线模板](https://github.com/ACL4SSR/ACL4SSR/blob/master/Clash/config/ACL4SSR_Online.ini)的分层、统一出口和广告开关思路；公共域名/IP数据继续引用[MetaCubeX/meta-rules-dat](https://github.com/MetaCubeX/meta-rules-dat)。没有复制并叠加整套ACL4SSR数据库。
 
-公共集合来自 [MetaCubeX/meta-rules-dat](https://github.com/MetaCubeX/meta-rules-dat)。Tower兼容性依据2026-09-26的源码：[节点解析器](https://github.com/pengchujin/tower/blob/main/Tower/Services/SubscriptionParser.swift)、[规则解析器](https://github.com/pengchujin/tower/blob/main/Tower/Services/RuleSchemeParser.swift)、[配置生成器](https://github.com/pengchujin/tower/blob/main/Tower/Services/ConfigurationGenerator.swift)。
+结构和规则验证不代表每个网站、每家银行或每台设备都已经实机通过；个别应用的共享域名、CDN、IP归属和地区条件仍需按实际请求修正。

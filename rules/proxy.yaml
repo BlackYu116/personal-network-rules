@@ -1,0 +1,6 @@
+# 强制走“海外默认”的个人例外；不填节点或机场名字。
+# 与direct列表冲突时，direct优先；避免重复收录。
+payload:
+- +.github.com
+- +.githubusercontent.com
+- +.githubassets.com
