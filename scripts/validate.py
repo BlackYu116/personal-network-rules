@@ -20,16 +20,24 @@ raw = (ROOT / 'tower.yaml').read_text()
 assert set(c) == {'rules', 'proxy-groups', 'rule-providers', 'profile', 'dns'}
 for marker in ['vless://', 'ss://', 'token2=', 'PRIVATE KEY', 'password:', 'uuid:', 'private-key:', 'DMIT', 'AmyTelecom', '日本节点', '美国节点']:
     assert marker not in raw, 'Credential or provider/region dependency in public template'
-G, F, C, A, ADS = '🌍 海外默认', '🏦 金融', '🪙 Crypto', '🤖 AI / X', '🛑 广告过滤'
+G, F, C, A, ADS, AUTO = '🌍 海外默认', '🏦 金融', '🪙 Crypto', '🤖 AI / X', '🛑 广告过滤', '♻️ 自动选择'
 groups = {g['name']: g for g in c['proxy-groups']}
-assert set(groups) == {G, F, C, A, ADS} and len(c['proxy-groups']) == 5
+assert set(groups) == {G, F, C, A, ADS, AUTO} and len(c['proxy-groups']) == 6
 assert c['profile']['store-selected'] is True
 for name, group in groups.items():
-    assert group['type'] == 'select'
     assert group['proxies']
     assert all(x in groups or x in ['DIRECT', 'REJECT'] for x in group['proxies'])
+    if name == AUTO:
+        assert group['type'] == 'url-test' and group['proxies'] == ['REJECT']
+        assert group['include-all'] is True and group['filter'] == '.*'
+        assert group['url'].startswith('https://') and group['interval'] >= 300 and group['tolerance'] >= 100 and group['lazy'] is True
+        continue
+    assert group['type'] == 'select'
     if name != ADS:
         assert group['include-all'] is True and group['filter'] == '.*'
+# Auto failover stays opt-in and manual-first: only the general exit offers it, never account-bound groups.
+assert groups[G]['proxies'][0] == 'REJECT' and AUTO in groups[G]['proxies']
+assert all(AUTO not in groups[n]['proxies'] for n in [F, C, A, ADS])
 
 
 def choices(pool):
@@ -135,6 +143,23 @@ for host, want in cases.items():
     assert route(host) == want, (host, route(host), want)
 assert c['rules'][-1] == 'MATCH,' + G
 assert not any(x.startswith('AND,') for x in c['rules'])
+
+# Derived artifacts must stay generated from tower.yaml (scripts/gen_overwrites.py).
+derived_rules = [r for r in c['rules'] if not r.startswith('MATCH,')]
+overwrite = yaml.safe_load((ROOT / 'mihomo' / 'openclash-ruleset-overwrite.ini').read_text().split('[YAML]', 1)[1])
+assert overwrite['rule-providers'] == c['rule-providers'], 'OpenClash overwrite module out of sync with tower.yaml'
+assert overwrite['+rules'] == derived_rules, 'OpenClash overwrite rules out of sync with tower.yaml'
+qx = (ROOT / 'qx' / 'filter-remote-snippet.conf').read_text().splitlines()
+qx_remote = [l for l in qx if l.startswith('https://')]
+assert len(qx_remote) == len(derived_rules), 'QX filter_remote snippet out of sync with tower.yaml'
+for line, rule in zip(qx_remote, derived_rules):
+    parts = rule.split(',')
+    fields = line.split(', ')
+    assert fields[0] == c['rule-providers'][parts[1]]['url'], 'QX snippet URL mismatch: ' + parts[1]
+    assert fields[1] == f'tag={parts[1]}' and fields[2] == f'force-policy={parts[2]}', 'QX snippet tag/policy mismatch: ' + parts[1]
+    assert all(x in line for x in ['opt-parser=true', 'update-interval=86400', 'enabled=true'])
+assert 'resource_parser_url = https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/qx/resource-parser.js' in qx
+assert f'final, {G}' in qx
 assert 'microsoft' not in c['rule-providers'] and 'personal-apple-news' not in c['rule-providers']
 extra = yaml.safe_load((ROOT / 'mihomo/tello-udp.yaml').read_text())['prepend-rules']
 assert len(extra) == 2 and all(x.startswith('AND,') and x.endswith(',DIRECT') for x in extra)

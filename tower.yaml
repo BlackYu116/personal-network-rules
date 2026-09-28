@@ -1,6 +1,8 @@
 # 通用个人分流：只依赖业务组，不依赖机场、节点品牌或地区名称。
 # 首次导入必须手选“海外默认”和“Crypto”的节点；初始REJECT是有意设置。
 # 金融与AI/X默认跟随海外默认，也可分别固定到任意启用节点。
+# “海外默认”可选“♻️ 自动选择”（低延迟自动切换，可容忍150ms抖动）；
+# 金融/Crypto/AI-X刻意不提供自动选项，账户出口保持手选稳定。
 # 节点只在塔台维护；日常例外编辑rules/中的小文件。
 # 规则边界与优先级见docs/routing-design.md。
 rules:
@@ -28,9 +30,20 @@ proxy-groups:
   type: select
   proxies:
   - REJECT
+  - ♻️ 自动选择
   - DIRECT
   include-all: true
   filter: .*
+- name: ♻️ 自动选择
+  type: url-test
+  proxies:
+  - REJECT
+  include-all: true
+  filter: .*
+  url: https://www.gstatic.com/generate_204
+  interval: 900
+  tolerance: 150
+  lazy: true
 - name: 🏦 金融
   type: select
   proxies:

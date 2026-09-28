@@ -14,6 +14,8 @@
 
 这是有意的初始行为，不是为地区组放一个占位符。当前Tower会先保留显式候选、再追加动态节点；这样即使没有可用节点，组也不会因变空而被生成器回退成DIRECT。新增节点通过 `include-all` 纳入候选，现有选择仍由客户端保存情况决定。[Tower解析器](https://github.com/pengchujin/tower/blob/main/Tower/Services/RuleSchemeParser.swift#L398)
 
+“♻️ 自动选择”是唯一的自动切换组，且只作为“🌍 海外默认”的可选候选存在：用户手选它之后才生效，容忍150ms抖动、未使用时不测速，空节点池时同样回到REJECT。金融、Crypto、AI/X刻意不提供自动选项——账户出口换IP可能触发风控，日常换线需求由海外默认一个开关承担即可。[Tower解析器](https://github.com/pengchujin/tower/blob/main/Tower/Services/RuleSchemeParser.swift)对 `url-test` 组与 `include-all`/`filter` 均有原生映射，Mihomo实测该组合通过配置校验。
+
 没有自动按延迟切换账户出口。删掉原来选中的节点、换机场或重新导出后，应检查实际选中项。节点失效不代表规则失效，域名表也不能保证服务接受某个IP。
 
 ## 顺序为什么这样排

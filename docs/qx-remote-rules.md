@@ -4,6 +4,8 @@
 
 本方案已经有独立的资源解析器，可让QX直接在 `[filter_remote]` 引用同一批YAML源，不必把所有条目写进主配置。无需为此再维护一套镜像数据库或第二份业务规则。
 
+**当前五组版本的完整 `[filter_remote]` 已生成为 [qx/filter-remote-snippet.conf](../qx/filter-remote-snippet.conf)**（含 general 解析器行、18个远程源和 final 兜底），由 `scripts/gen_overwrites.py` 从 tower.yaml 派生并保持同步。它不含节点和策略组定义——`[server_local]` 与 `[policy]` 从你现有QX配置保留。
+
 ## 轻量配置的结构
 
 - `[server_local]`：保留手动刷新的节点快照。
