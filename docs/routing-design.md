@@ -14,7 +14,7 @@
 
 这是有意的初始行为，不是为地区组放一个占位符。当前Tower会先保留显式候选、再追加动态节点；这样即使没有可用节点，组也不会因变空而被生成器回退成DIRECT。新增节点通过 `include-all` 纳入候选，现有选择仍由客户端保存情况决定。[Tower解析器](https://github.com/pengchujin/tower/blob/main/Tower/Services/RuleSchemeParser.swift#L398)
 
-“♻️ 自动选择”是唯一的自动切换组，且只作为“🌍 海外默认”的可选候选存在：用户手选它之后才生效，容忍150ms抖动、未使用时不测速，空节点池时同样回到REJECT。金融、Crypto、AI/X刻意不提供自动选项——账户出口换IP可能触发风控，日常换线需求由海外默认一个开关承担即可。[Tower解析器](https://github.com/pengchujin/tower/blob/main/Tower/Services/RuleSchemeParser.swift)对 `url-test` 组与 `include-all`/`filter` 均有原生映射，Mihomo实测该组合通过配置校验。
+模板刻意**不提供任何自动切换组**（url-test、fallback、load-balance一律不进模板）：银行、券商、交易所和AI服务对出口IP变化敏感，自动测速换线会抬高风控等级。所有出口由用户手选并长期保持，换出口是一个显式的手动决定；节点体检与测速工具见[node-quality.md](node-quality.md)，测速结果用于手选决策，不用于自动轮换。
 
 没有自动按延迟切换账户出口。删掉原来选中的节点、换机场或重新导出后，应检查实际选中项。节点失效不代表规则失效，域名表也不能保证服务接受某个IP。
 

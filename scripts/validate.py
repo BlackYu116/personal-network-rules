@@ -20,24 +20,19 @@ raw = (ROOT / 'tower.yaml').read_text()
 assert set(c) == {'rules', 'proxy-groups', 'rule-providers', 'profile', 'dns'}
 for marker in ['vless://', 'ss://', 'token2=', 'PRIVATE KEY', 'password:', 'uuid:', 'private-key:', 'DMIT', 'AmyTelecom', '日本节点', '美国节点']:
     assert marker not in raw, 'Credential or provider/region dependency in public template'
-G, F, C, A, ADS, AUTO = '🌍 海外默认', '🏦 金融', '🪙 Crypto', '🤖 AI / X', '🛑 广告过滤', '♻️ 自动选择'
+G, F, C, A, ADS = '🌍 海外默认', '🏦 金融', '🪙 Crypto', '🤖 AI / X', '🛑 广告过滤'
 groups = {g['name']: g for g in c['proxy-groups']}
-assert set(groups) == {G, F, C, A, ADS, AUTO} and len(c['proxy-groups']) == 6
+assert set(groups) == {G, F, C, A, ADS} and len(c['proxy-groups']) == 5
 assert c['profile']['store-selected'] is True
 for name, group in groups.items():
+    assert group['type'] == 'select'
     assert group['proxies']
     assert all(x in groups or x in ['DIRECT', 'REJECT'] for x in group['proxies'])
-    if name == AUTO:
-        assert group['type'] == 'url-test' and group['proxies'] == ['REJECT']
-        assert group['include-all'] is True and group['filter'] == '.*'
-        assert group['url'].startswith('https://') and group['interval'] >= 300 and group['tolerance'] >= 100 and group['lazy'] is True
-        continue
-    assert group['type'] == 'select'
     if name != ADS:
         assert group['include-all'] is True and group['filter'] == '.*'
-# Auto failover stays opt-in and manual-first: only the general exit offers it, never account-bound groups.
-assert groups[G]['proxies'][0] == 'REJECT' and AUTO in groups[G]['proxies']
-assert all(AUTO not in groups[n]['proxies'] for n in [F, C, A, ADS])
+# Stable-exit philosophy: no auto-switching group may enter the template, so account
+# services keep a fixed exit IP. url-test/load-balance/fallback would rotate exits.
+assert all(g['type'] == 'select' for g in c['proxy-groups'])
 
 
 def choices(pool):

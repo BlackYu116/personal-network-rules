@@ -14,18 +14,17 @@ https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/tower.y
 
 **首次使用必须做两次选择：**在“🌍 海外默认”选日常出口，在“🪙 Crypto”选Crypto出口（按目前偏好手选实测日本节点）。两组初始均为REJECT，不会根据节点名字猜测实际国家，也不会自动挑选某个机场。选完后更新规则资源；客户端支持时会保存选择。旧客户端持久选择可能覆盖文件首项，迁移时应检查。
 
-## 六个策略组（五个业务组 + 一个自动工具组）
+## 五个通用策略组
 
 | 组 | 初始选择 | 用途 |
 |---|---|---|
-| 🌍 海外默认 | REJECT，首次手选节点 | 其他境外流量、个人强制代理例外；也可选“♻️ 自动选择” |
-| ♻️ 自动选择 | url-test，延迟最低者 | 仅作为海外默认的可选候选；选中后按延迟自动切换（容忍150ms抖动，未使用时不测速） |
+| 🌍 海外默认 | REJECT，首次手选节点 | 其他境外流量、个人强制代理例外 |
 | 🏦 金融 | 海外默认 | HSBC境外业务、IBKR、Schwab、Longbridge；也可单独固定节点 |
 | 🪙 Crypto | REJECT，首次手选节点 | Binance、OKX、TradingView及其他Crypto |
 | 🤖 AI / X | 海外默认 | 境外AI和X；也可单独固定节点 |
 | 🛑 广告过滤 | REJECT | 可临时改选海外默认或DIRECT排查误杀 |
 
-前四组可直接选择当前启用的任意节点。更换机场或停用自有VPS，不需要改分流规则；重新导出节点后检查旧选项是否仍存在。没有国家组、供应商品牌过滤；唯一的自动切换是海外默认可选手选的“♻️ 自动选择”，金融/Crypto/AI-X刻意不提供自动选项，账户出口保持手选稳定。空节点池时自动选择同样回到REJECT，不会静默变直连。国内银行、国内网站、内网和Tello指定域名仍直连。
+前四组可直接选择当前启用的任意节点。更换机场或停用自有VPS，不需要改分流规则；重新导出节点后检查旧选项是否仍存在。没有国家组、供应商品牌过滤，**也没有任何自动测速/自动切换组**——全部出口手选并保持，出口IP稳定是账户风控的一部分，这是有意设计；换出口永远是显式的手动动作。国内银行、国内网站、内网和Tello指定域名仍直连。
 
 Apple News不再单独分组，没有强制 `gateway.icloud.com` 的特殊路由。Microsoft也不再整家公司一律直连：已有国内分类走直连，其余按海外规则处理；其AI服务优先进入AI组。历史News文档及旧规则URL暂留以兼容旧导出，新模板不引用。
 
@@ -67,7 +66,7 @@ Apple News不再单独分组，没有强制 `gateway.icloud.com` 的特殊路由
 
 两个派生文件由 `python scripts/gen_overwrites.py` 从 tower.yaml 生成，验证脚本会检查同步；改完 tower.yaml 后重新生成并提交。
 
-[塔台导入与迁移](docs/tower.md) · [DNS边界](docs/dns.md) · [OpenClash自动更新](docs/openclash.md) · [Tello](docs/tello.md) · [QX远程规则与文件体积](docs/qx-remote-rules.md)
+[塔台导入与迁移](docs/tower.md) · [DNS边界](docs/dns.md) · [OpenClash自动更新](docs/openclash.md) · [IPv6路线](docs/ipv6.md) · [透明代理调优](docs/transparent-proxy.md) · [Tello](docs/tello.md) · [QX远程规则与文件体积](docs/qx-remote-rules.md)
 
 ## Quantumult X 工具
 
