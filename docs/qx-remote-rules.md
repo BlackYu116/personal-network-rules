@@ -4,7 +4,7 @@
 
 本方案已经有独立的资源解析器，可让QX直接在 `[filter_remote]` 引用同一批YAML源，不必把所有条目写进主配置。无需为此再维护一套镜像数据库或第二份业务规则。
 
-**当前九组版本的完整 `[filter_remote]` 已生成为 [qx/filter-remote-snippet.conf](../qx/filter-remote-snippet.conf)**（含 general 解析器行、22个远程源和 final 兜底），由 `scripts/gen_overwrites.py` 从 tower.yaml 派生并保持同步。它不含节点和策略组定义——`[server_local]` 与 `[policy]` 必须来自包含九组的新塔台导出，不能直接沿用缺少银行组的旧五组配置。
+**当前十五组版本的完整 `[filter_remote]` 已生成为 [qx/filter-remote-snippet.conf](../qx/filter-remote-snippet.conf)**（含 general 解析器行、30个远程源和 final 兜底），由 `scripts/gen_overwrites.py` 从 tower.yaml 派生并保持同步。它不含节点和策略组定义——`[server_local]` 与 `[policy]` 必须来自包含十五组的新塔台导出，不能直接沿用缺少银行组的旧五组配置。
 
 ## 轻量配置的结构
 
@@ -35,7 +35,7 @@ final, 🌍 海外默认
 
 1. 保留旧QX配置可切回，将轻量副本作为另一份完整配置导入。不是添加到“服务器资源”。
 2. 首次安装时确保GitHub Raw可访问，更新资源解析器。最新版已支持 `+.lan`、`+.cn`、`+.hsbc` 等单标签/TLD后缀。
-3. 在分流资源中手动更新全部22个来源，确认均下载并解析成功，然后再作为日常配置使用。规则缓存尚未建立或资源失败时，不能把只有final兜底的状态当作完整分流已生效。
+3. 在分流资源中手动更新全部30个来源，确认均下载并解析成功，然后再作为日常配置使用。规则缓存尚未建立或资源失败时，不能把只有final兜底的状态当作完整分流已生效。
 4. 检查国内银行/Tello命中direct、Crypto命中日本、AI和其他海外命中预期出口。原有手选结果可能由客户端保留，仍应确认。
 
 节点仍是手动更新后的本地快照；规则资源由QX每天检查更新。完整主配置变小，不意味着手机不再下载或加载这些规则，也不保证内核内存、延迟或下载速度按同样比例改善。
@@ -54,4 +54,4 @@ final, 🌍 海外默认
 
 [Tower规则输出规划器](https://github.com/pengchujin/tower/blob/main/Tower/Services/RuleSetEmissionPlanner.swift) · [QX官方远程资源示例](https://github.com/crossutility/Quantumult-X/blob/master/sample.conf) · [本地域名兜底相关问题报告](https://github.com/crossutility/Quantumult-X/issues/251)
 
-通用九组模板已取代历史八组模板；之前交付的本地轻量副本是当时方案的验证产物，不会自动获得新的策略组结构。迁移以最新tower.yaml和本文结构说明为准。
+通用十五组模板已取代历史八组模板；之前交付的本地轻量副本是当时方案的验证产物，不会自动获得新的策略组结构。迁移以最新tower.yaml和本文结构说明为准。

@@ -1,24 +1,31 @@
-# 通用个人分流：节点来源由塔台维护，所有业务出口保持手选。
-# 海外默认、Crypto及香港/美国/新加坡银行组首次必须手选；未选为REJECT。
-# 内地银行组默认DIRECT；金融保留给券商、其他地区和无法区分地区的共享银行端点。
-# 不按节点名猜地区，不测速换出口；地区组的名字不证明所选节点真实地区。
-# 银行证据与共享域名边界见docs/bank-regions.md；Tailscale由塔台私有配置管理。
+# 地区银行、券商及跨地区品牌共享出口；不按节点名猜地区、不自动换节点。
+# 境外地区组初始REJECT；内地银行默认DIRECT；三品牌共享组默认跟随香港券商。
+# 金融域名维护源data/financial-services.yaml；来源与边界docs/financial-coverage.md。
+# 节点/凭据由塔台管理；Tailscale专用规则必须在通用private/private-ip前。
 rules:
 - RULE-SET,private,DIRECT
 - RULE-SET,private-ip,DIRECT,no-resolve
 - RULE-SET,personal-direct,DIRECT
-- RULE-SET,bank-cn,🏦 银行-内地
+- RULE-SET,bank-cn-priority,🏦 银行-内地
+- RULE-SET,finance-priority,🏦 金融
 - RULE-SET,bank-hk,🏦 银行-香港
 - RULE-SET,bank-us,🏦 银行-美国
 - RULE-SET,bank-sg,🏦 银行-新加坡
+- RULE-SET,bank-cn,🏦 银行-内地
 - RULE-SET,hsbc-cn,🏦 银行-内地
+- RULE-SET,broker-hk,📈 券商-香港
+- RULE-SET,broker-us,📈 券商-美国
+- RULE-SET,broker-sg,📈 券商-新加坡
+- RULE-SET,broker-futu,📈 富途/Moomoo
+- RULE-SET,broker-webull,📈 Webull
+- RULE-SET,broker-tiger,📈 Tiger
 - RULE-SET,personal-finance,🏦 金融
 - RULE-SET,personal-crypto,🪙 Crypto
 - RULE-SET,personal-ai-x,🤖 AI / X
 - RULE-SET,personal-proxy,🌍 海外默认
 - RULE-SET,ibkr,🏦 金融
-- RULE-SET,schwab,🏦 金融
-- RULE-SET,longbridge,🏦 金融
+- RULE-SET,schwab,📈 券商-美国
+- RULE-SET,longbridge,📈 券商-香港
 - RULE-SET,hsbc,🏦 金融
 - RULE-SET,category-cryptocurrency,🪙 Crypto
 - RULE-SET,category-ai-!cn,🤖 AI / X
@@ -71,6 +78,66 @@ proxy-groups:
   proxies:
   - REJECT
   - 🌍 海外默认
+  - DIRECT
+  include-all: true
+  filter: .*
+- name: 📈 券商-香港
+  type: select
+  proxies:
+  - REJECT
+  - 🏦 银行-香港
+  - 🌍 海外默认
+  - DIRECT
+  include-all: true
+  filter: .*
+- name: 📈 券商-美国
+  type: select
+  proxies:
+  - REJECT
+  - 🏦 银行-美国
+  - 🌍 海外默认
+  - DIRECT
+  include-all: true
+  filter: .*
+- name: 📈 券商-新加坡
+  type: select
+  proxies:
+  - REJECT
+  - 🏦 银行-新加坡
+  - 🌍 海外默认
+  - DIRECT
+  include-all: true
+  filter: .*
+- name: 📈 富途/Moomoo
+  type: select
+  proxies:
+  - 📈 券商-香港
+  - 📈 券商-美国
+  - 📈 券商-新加坡
+  - 🏦 金融
+  - REJECT
+  - DIRECT
+  include-all: true
+  filter: .*
+- name: 📈 Webull
+  type: select
+  proxies:
+  - 📈 券商-香港
+  - 📈 券商-美国
+  - 📈 券商-新加坡
+  - 🏦 金融
+  - REJECT
+  - DIRECT
+  include-all: true
+  filter: .*
+- name: 📈 Tiger
+  type: select
+  proxies:
+  - 📈 券商-香港
+  - 📈 券商-美国
+  - 📈 券商-新加坡
+  - 🏦 金融
+  - REJECT
   - DIRECT
   include-all: true
   filter: .*
@@ -271,6 +338,70 @@ rule-providers:
     format: yaml
     url: https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/rules/bank-sg.yaml
     path: ./rule-cache/bank-sg.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  bank-cn-priority:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/rules/bank-cn-priority.yaml
+    path: ./rule-cache/bank-cn-priority.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  finance-priority:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/rules/finance-priority.yaml
+    path: ./rule-cache/finance-priority.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  broker-hk:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/rules/broker-hk.yaml
+    path: ./rule-cache/broker-hk.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  broker-us:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/rules/broker-us.yaml
+    path: ./rule-cache/broker-us.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  broker-sg:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/rules/broker-sg.yaml
+    path: ./rule-cache/broker-sg.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  broker-futu:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/rules/broker-futu.yaml
+    path: ./rule-cache/broker-futu.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  broker-webull:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/rules/broker-webull.yaml
+    path: ./rule-cache/broker-webull.yaml
+    interval: 86400
+    proxy: 🌍 海外默认
+  broker-tiger:
+    type: http
+    behavior: domain
+    format: yaml
+    url: https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/rules/broker-tiger.yaml
+    path: ./rule-cache/broker-tiger.yaml
     interval: 86400
     proxy: 🌍 海外默认
 profile:

@@ -10,6 +10,7 @@ import urllib.request
 from pathlib import Path
 
 import yaml
+from gen_financial_rules import POLICIES, catalog, outputs
 
 ROOT = Path(__file__).resolve().parents[1]
 p = argparse.ArgumentParser()
@@ -22,8 +23,10 @@ for marker in ['vless://', 'ss://', 'token2=', 'PRIVATE KEY', 'password:', 'uuid
     assert marker not in raw, 'Credential or provider/region dependency in public template'
 G, F, C, A, ADS = '🌍 海外默认', '🏦 金融', '🪙 Crypto', '🤖 AI / X', '🛑 广告过滤'
 CN, HK, US, SG = '🏦 银行-内地', '🏦 银行-香港', '🏦 银行-美国', '🏦 银行-新加坡'
+BK, BU, BS = '📈 券商-香港', '📈 券商-美国', '📈 券商-新加坡'
+FT, WB, TG = '📈 富途/Moomoo', '📈 Webull', '📈 Tiger'
 groups = {g['name']: g for g in c['proxy-groups']}
-assert set(groups) == {G, F, C, A, ADS, CN, HK, US, SG} and len(c['proxy-groups']) == 9
+assert set(groups) == {G, F, C, A, ADS, CN, HK, US, SG, BK, BU, BS, FT, WB, TG} and len(c['proxy-groups']) == 15
 assert c['profile']['store-selected'] is True
 for name, group in groups.items():
     assert group['type'] == 'select'
@@ -34,6 +37,17 @@ for name, group in groups.items():
 # Stable-exit philosophy: no auto-switching group may enter the template, so account
 # services keep a fixed exit IP. url-test/load-balance/fallback would rotate exits.
 assert all(g['type'] == 'select' for g in c['proxy-groups'])
+
+
+def check_group_graph(name, path):
+    assert name not in path, 'Cycle among selectable policies: ' + name
+    for target in groups[name]['proxies']:
+        if target in groups:
+            check_group_graph(target, path | {name})
+
+
+for name in groups:
+    check_group_graph(name, set())
 
 
 def choices(pool):
@@ -62,11 +76,15 @@ for pool in [['node-a', 'node-b'], ['任意来源-甲', '任意来源-乙'], []]
         assert leaf(F, pool, {G: pool[0], F: pool[1]}) == pool[1]
         assert leaf(A, pool, {G: pool[0], A: pool[1]}) == pool[1]
         assert leaf(ADS, pool, {G: pool[0], ADS: G}) == pool[0]
-        for bank in [HK, US, SG]:
+        for bank in [HK, US, SG, BK, BU, BS]:
             assert leaf(bank, pool, {G: pool[0]}) == 'REJECT', 'Regional bank must not inherit the global exit silently'
             assert leaf(bank, pool, {G: pool[0], bank: pool[1]}) == pool[1]
         assert leaf(CN, pool, {G: pool[0]}) == 'DIRECT'
         assert leaf(CN, pool, {CN: pool[1]}) == pool[1]
+        for brand in [FT, WB, TG]:
+            assert leaf(brand, pool, {G: pool[0]}) == 'REJECT'
+            assert leaf(brand, pool, {BK: pool[0], BU: pool[1]}) == pool[0]
+            assert leaf(brand, pool, {BK: pool[0], BU: pool[1], brand: BU}) == pool[1]
 
 
 def get(item):
@@ -148,6 +166,33 @@ cases.update({h: A for h in ['claude.ai', 'x.com', 'api.x.com', 'pbs.twimg.com',
 cases.update({h: G for h in ['www.microsoft.com', 'outlook.live.com', 'login.microsoftonline.com', 'apple.news', 'news-client-search.apple.com', 'gateway.icloud.com', 'www.t-mobile.com', 'raw.githubusercontent.com', 'github.com', '208.54.85.1', 'unlisted-routing-test-7d95.net']})
 cases['doubleclick.net'] = ADS
 cases.update({h: A for h in ['copilot.github.com', 'copilot-proxy.githubusercontent.com']})
+cases.update({h: BU for h in ['trade.thinkorswim.com', 'www.tdameritrade.com', 'www.ameritrade.com', 'tos.mx', 'tosmediaserver.schwab.com', 'thinkorswim-services.schwab.com', 'papermoney-services.schwab.com', 'test.schwab.tech', 'thinkorswim-services-b.tos-prd.prd.gcp.schwabcloud.com', 'www.schwab.com.hk', 'www.schwab.com.sg', 'www.schwab.com']})
+cases.update({h: BK for h in ['www.longbridge.com', 'openapi.longportapp.com', 'openapi.longbridge.com', 'quote.longbridge.cn', 'assets.lbkrs.com']})
+cases.update({h: HK for h in ['www.bochk.com', 'www.icbcasia.com', 'www.hangseng.com', 'www.hkbea.com']})
+cases.update({h: US for h in ['app.mercury.com', 'online.eastwestbank.com', 'www.velobank.com', 'secure.bankofamerica.com']})
+# Test each reviewed institution's suffix, child host, and exact/login host, not
+# just a hand-picked small homepage sample. Derived lists must match the catalog.
+financial = catalog()
+for path, expected in outputs(financial).items():
+    assert path.read_text() == expected, 'Financial list out of sync: ' + path.name
+for service in financial['services']:
+    want = POLICIES[service['policy']]
+    hosts = service['exact'] + service.get('test_hosts', [])
+    hosts += [host for suffix in service['suffixes'] for host in [suffix, 'routing-fixture.' + suffix]]
+    for host in hosts:
+        assert host not in cases or cases[host] == want, ('Conflicting financial test case', host, cases.get(host), want)
+        cases[host] = want
+# Regional child and shared login precedences must win over broad parent brands.
+cases.update({'online.asia.ccb.com': HK, 'www.ccb.com': CN,
+              'cn.cmbwinglungbank.com': CN, 'www.cmbwinglungbank.com': HK,
+              'internet-banking.hk.dbs.com': HK, 'www.dbs.com.sg': SG,
+              'velocity.ocbc.com': F, 'www.ocbc.com': SG,
+              'retail.sc.com': F, 'online.citi.com': F,
+              'www.americanexpress.com': F, 'www.td.com': F,
+              'eastwest.bankonline.com': F, 'hktrade.wbsecurities.com': WB,
+              'trade.webullfintech.com': WB, 'passport.futunn.com': FT,
+              'q.futunn.com': FT, 'www.futusg.com': FT,
+              'www.tigerbrokers.com.sg': TG, 'www.itiger.com': TG})
 for host, want in cases.items():
     assert route(host) == want, (host, route(host), want)
 assert route('insure.za.group') != HK, 'Do not classify every ZA Group business as ZA Bank'
@@ -172,7 +217,7 @@ for host, want in cases.items():
     assert route(host, ts_prefix + c['rules'], (ts,)) == want
 # Regional banks must never have the same explicit exception in two regions.
 regional_entries = {}
-for name in ['bank-cn', 'bank-hk', 'bank-us', 'bank-sg']:
+for name in POLICIES:
     entries = yaml.safe_load((ROOT / 'rules' / (name + '.yaml')).read_text())['payload']
     assert len(entries) == len(set(entries)), 'Duplicate regional exception'
     for entry in entries:
@@ -219,4 +264,4 @@ if args.mihomo_bin:
         path.write_text(yaml.safe_dump(fixture_config, allow_unicode=True, sort_keys=False))
         subprocess.run([args.mihomo_bin, '-t', '-d', tmp, '-f', str(path)], check=True)
 print(f'PASS: {len(groups)} provider-independent groups, {len(loaded)} rule sets, {len(cases)} routing cases, renamed/empty node pools; synthetic nodes only.')
-print('First import: select overseas, Crypto, Hong Kong / US / Singapore banking exits. Mainland banking defaults DIRECT; no group auto-selects a country or provider.')
+print('First import: select overseas, Crypto, Hong Kong / US / Singapore bank and brokerage exits. Mainland banking defaults DIRECT; no group auto-selects a country or provider.')

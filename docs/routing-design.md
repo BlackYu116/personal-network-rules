@@ -64,3 +64,9 @@
 四个银行组优先于共享HSBC和通用中国分类；内地默认DIRECT，香港/美国/新加坡默认REJECT待手选。金融组保留原名，承担券商和共享域名兜底。已核实域名、官方来源、地区共享端点及Global View边界见[bank-regions.md](bank-regions.md)。
 
 Copilot的明确业务子域现在先于GitHub全站例外；登录路径共用github.com或api.github.com时仍不能按URL路径区分，不把整个GitHub改归AI。端点依据：[GitHub官方允许列表](https://docs.github.com/en/copilot/reference/copilot-allowlist-reference)。
+
+## 2026-10-17 扩展：银行与券商分开
+
+以[金融服务目录](../data/financial-services.yaml)为维护源，覆盖香港主流银行、美国银行与地区券商，生成13份金融列表。总计15个select组，30个规则集。长桥归香港券商、嘉信/thinkorswim归美国券商；富途/Moomoo、Webull、Tiger的地区网站和共享接口各用同一品牌组，默认跟随香港券商，避免同一App多出口。
+
+更具体的地区子域必须先于父域：建行亚洲先于ccb.com；招商永隆内地分行又先于香港cmbwinglungbank.com；共享Velocity入口先于OCBC新加坡父域。来源和完整迁移说明见[financial-coverage.md](financial-coverage.md)。

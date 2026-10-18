@@ -1,0 +1,404 @@
+{
+  "date": "2026-10-17",
+  "scope": "Official public home/login pages and HTTP HTML/CSP; no account login, app capture, bank transaction, router write or connectivity guarantee.",
+  "method": "web open/search and direct HTTPS GET; suffixes refer to observed official brands or explicitly documented first-party dependency families, never inferred generic CDN domains.",
+  "records": [
+    {
+      "name": "Mercury",
+      "suffixes": [
+        "mercury.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://mercury.com/"
+      ],
+      "notes": "美国金融科技公司，并非银行；官网明确银行服务由合作银行提供。公开登录 app.mercury.com；不需要添加合作银行整个域名。",
+      "recommended_route": "银行-美国",
+      "kind": "fintech",
+      "observed_hosts": [
+        "app.mercury.com",
+        "support.mercury.com"
+      ]
+    },
+    {
+      "name": "East West Bank 美国华美银行",
+      "suffixes": [
+        "eastwestbank.com",
+        "velobank.com"
+      ],
+      "exact": [
+        "depositbridgeplus-eastwestbank.fisglobal.com"
+      ],
+      "sources": [
+        "https://www.eastwestbank.com/en/login",
+        "https://www.velobank.com/"
+      ],
+      "notes": "美国华美及 Velo，非菲律宾 eastwestbanker.com。eastwest.bankonline.com 被官网同时用作美国及香港 businessBridge，放共享入口记录，不能将 bankonline.com 全域归美国。",
+      "recommended_route": "银行-美国",
+      "kind": "bank",
+      "observed_hosts": [
+        "online.eastwestbank.com",
+        "online.velobank.com",
+        "business.eastwestbank.com",
+        "depositbridgeplus-eastwestbank.fisglobal.com"
+      ]
+    },
+    {
+      "name": "Chase US",
+      "suffixes": [
+        "chase.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.chase.com/"
+      ],
+      "notes": "官网登录 secure.chase.com；Chase UK 使用 chase.co.uk 不被该规则覆盖。勿顺便扩大到全球 jpmorgan.com。",
+      "recommended_route": "银行-美国",
+      "kind": "bank",
+      "observed_hosts": [
+        "secure.chase.com",
+        "apix.chase.com",
+        "publicapi.chase.com",
+        "asset.chase.com"
+      ]
+    },
+    {
+      "name": "Bank of America",
+      "suffixes": [
+        "bankofamerica.com",
+        "bac-assets.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.bankofamerica.com/"
+      ],
+      "notes": "登录及静态/API资源均在官网HTML公开出现；bac-assets.com 同时承载 Merrill 资源，如美国券商与银行选不同节点需注意共享资产边界。",
+      "recommended_route": "银行-美国",
+      "kind": "bank",
+      "observed_hosts": [
+        "secure.bankofamerica.com",
+        "api1.bac-assets.com",
+        "secure1.bac-assets.com",
+        "www1.bac-assets.com",
+        "scripts-olui2.fs.ml.bac-assets.com"
+      ]
+    },
+    {
+      "name": "Wells Fargo",
+      "suffixes": [
+        "wellsfargo.com",
+        "wellsfargomedia.com",
+        "wf.com",
+        "wfinterface.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.wellsfargo.com/"
+      ],
+      "notes": "登录 connect.secure.wellsfargo.com、图片 www17.wellsfargomedia.com；wf.com、wfinterface.com 来源为官网 Content-Security-Policy allowlist，证明官方声明允许使用，未验证这些域名所有主机及每项App实际调用。",
+      "recommended_route": "银行-美国",
+      "kind": "bank",
+      "observed_hosts": [
+        "connect.secure.wellsfargo.com",
+        "oam.wellsfargo.com",
+        "www17.wellsfargomedia.com"
+      ]
+    },
+    {
+      "name": "Capital One",
+      "suffixes": [
+        "capitalone.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.capitalone.com/"
+      ],
+      "notes": "官网登录 verified.capitalone.com；英国、加拿大使用另外的国别域。没有自动加入购物和旅行域名。",
+      "recommended_route": "银行-美国",
+      "kind": "bank",
+      "observed_hosts": [
+        "verified.capitalone.com",
+        "ecm.capitalone.com"
+      ]
+    },
+    {
+      "name": "U.S. Bank",
+      "suffixes": [
+        "usbank.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.usbank.com/index.html",
+        "https://www.usbank.com/customer-service/knowledge-base/KB0069481.html"
+      ],
+      "notes": "官网HTML 200并包含 auth.usbank.com、onlinebanking.usbank.com。web工具初次取主页超时，直接HTTP及官方知识库补核。",
+      "recommended_route": "银行-美国",
+      "kind": "bank",
+      "observed_hosts": [
+        "auth.usbank.com",
+        "onlinebanking.usbank.com",
+        "onboarding.usbank.com"
+      ]
+    },
+    {
+      "name": "PNC",
+      "suffixes": [
+        "pnc.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.pnc.com/en/personal-banking.html"
+      ],
+      "notes": "公开官网的注册、找回入口均指向 secure.pnc.com；直接HTTP读取超时，但web工具官方页可读。未扩大到 omniasp.com 或其他共享服务全域。",
+      "recommended_route": "银行-美国",
+      "kind": "bank",
+      "observed_hosts": [
+        "secure.pnc.com",
+        "ihub.pnc.com"
+      ]
+    },
+    {
+      "name": "TD Bank US",
+      "suffixes": [
+        "tdbank.com",
+        "tdfitloan.com"
+      ],
+      "exact": [
+        "homelending.td.com",
+        "etreasury.td.com",
+        "createpersonalprofile.td.com",
+        "tdbank.billeriq.com"
+      ],
+      "sources": [
+        "https://www.td.com/us/en/personal-banking"
+      ],
+      "notes": "美国官网明确链接这些个人/商业银行入口。www.td.com 同主机以 /us 和加拿大路径区分，不纳入美国suffix。easyweb.td.com 为加拿大，不应归美国。第三方企业财富共享服务不扩大为全域。",
+      "recommended_route": "银行-美国",
+      "kind": "bank",
+      "observed_hosts": [
+        "onlinebanking.tdbank.com",
+        "businessconnect.tdbank.com",
+        "digitalexpress.tdbank.com",
+        "tdfx.tdbank.com",
+        "trade.tdbank.com"
+      ]
+    },
+    {
+      "name": "Discover",
+      "suffixes": [
+        "discover.com",
+        "discoverbank.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.discover.com/online-banking/"
+      ],
+      "notes": "bank.discover.com 为公开账户入口，discoverbank.com 由官网HTML引用。官网称继续使用Discover网站/App管理账户，保留该品牌覆盖。discoverglobalnetwork.com 是全球支付网络，不自动归美国银行。",
+      "recommended_route": "银行-美国",
+      "kind": "bank",
+      "observed_hosts": [
+        "bank.discover.com",
+        "mapi.discover.com",
+        "securedocapi.discover.com",
+        "www.discoverbank.com"
+      ]
+    },
+    {
+      "name": "Ally",
+      "suffixes": [
+        "ally.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.ally.com/"
+      ],
+      "notes": "美国银行官网直接链到 secure.ally.com；域下同时含投资和汽车金融业务，域名规则不能再按产品拆分。",
+      "recommended_route": "银行-美国",
+      "kind": "bank",
+      "observed_hosts": [
+        "secure.ally.com",
+        "myportal.ally.com",
+        "media.ally.com"
+      ]
+    },
+    {
+      "name": "SoFi US",
+      "suffixes": [
+        "sofi.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.sofi.com/",
+        "https://support.sofi.com/hc/en-us/articles/4423063919245-How-do-I-access-SoFi-Relay"
+      ],
+      "notes": "SoFi美国银行与投资/贷款共享 sofi.com；官网及官方帮助核实该域，直接HTTP为403，未登录及测试App。",
+      "recommended_route": "银行-美国",
+      "kind": "bank",
+      "observed_hosts": []
+    },
+    {
+      "name": "Citi US dedicated retail",
+      "suffixes": [
+        "citibankonline.com"
+      ],
+      "exact": [
+        "www.citi.com"
+      ],
+      "sources": [
+        "https://www.citi.com/online-services/bill-payment",
+        "https://online.citi.com/US/ag/bank/registration/set-up-online-access",
+        "https://citiretailservices.citibankonline.com/RSnextgen/svc/common/template.action?view=noCookieError"
+      ],
+      "notes": "www.citi.com 可作为美国零售官网精确入口但其也提供国别跳转；citi.com 全域包含全球/机构服务，不建议全域归美国。online.citi.com 的 /US 页面是美国入口但同主机国别独占未证明，应放共享金融。不可覆盖 citibank.com.hk/citibank.com.sg 等国别域。",
+      "recommended_route": "银行-美国",
+      "kind": "bank",
+      "observed_hosts": [
+        "www.citi.com",
+        "citiretailservices.citibankonline.com"
+      ]
+    },
+    {
+      "name": "Charles Schwab Bank",
+      "suffixes": [
+        "schwab.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.schwab.com/bank"
+      ],
+      "notes": "Schwab Bank和Schwab券商共用 client.schwab.com 登录，无法按URL路径拆分；应与嘉信/thinkorswim共同归美国券商组，或继续金融组，不能同时配置冲突域名规则。",
+      "recommended_route": "券商-美国（或现有金融组）",
+      "kind": "bank",
+      "observed_hosts": [
+        "client.schwab.com"
+      ]
+    },
+    {
+      "name": "Brex",
+      "suffixes": [
+        "brex.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.brex.com/",
+        "https://www.brex.com/about/"
+      ],
+      "notes": "金融科技公司并非银行；公开官网HTML链接 dashboard.brex.com。作为美国企业金融平台可用美国出口，但产品提供全球业务，不声称所有账户美国专属。",
+      "recommended_route": "银行-美国",
+      "kind": "fintech",
+      "observed_hosts": [
+        "dashboard.brex.com",
+        "status.brex.com"
+      ]
+    },
+    {
+      "name": "Ramp",
+      "suffixes": [
+        "ramp.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://ramp.com/",
+        "https://ramp.com/business-banking"
+      ],
+      "notes": "金融科技/支出管理平台并非银行，银行存款由合作银行提供；官方HTML和CSP均指 app.ramp.com。作为美国企业金融可用美国出口，不新增合作银行全域。",
+      "recommended_route": "银行-美国",
+      "kind": "fintech",
+      "observed_hosts": [
+        "app.ramp.com",
+        "support.ramp.com"
+      ]
+    },
+    {
+      "name": "Citi shared/global",
+      "suffixes": [
+        "citi.com",
+        "citibank.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.citi.com/",
+        "https://online.citi.com/US/ag/bank/registration/set-up-online-access",
+        "https://www.citibank.com.hk/portal/home_english/hkcb_Home.htm"
+      ],
+      "notes": "放在美国 www.citi.com 精确规则和各国域规则之后。online.citi.com /US 仅证明美国页面存在；不证明主机仅美国使用。不要把 citigroup.net/nsroot.net 的CSP大域全部加入地区组。",
+      "recommended_route": "金融（共享）",
+      "kind": "shared",
+      "observed_hosts": [
+        "online.citi.com"
+      ]
+    },
+    {
+      "name": "American Express global",
+      "suffixes": [
+        "americanexpress.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.americanexpress.com/en-us/account/login",
+        "https://www.americanexpress.com/en-hk/account/login/",
+        "https://www.americanexpress.com/en-us/banking/online-savings/account/"
+      ],
+      "notes": "美国银行/信用卡及香港登录均使用同一 www.americanexpress.com 主机，按 /en-us /en-hk 路径区分，Clash普通域名规则看不到HTTPS路径。必须保留共享手选金融组并说明用户按服务选择出口，不能将整个域名归美国。",
+      "recommended_route": "金融（共享）",
+      "kind": "shared",
+      "observed_hosts": []
+    },
+    {
+      "name": "TD shared/global",
+      "suffixes": [
+        "td.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.td.com/us/en/personal-banking"
+      ],
+      "notes": "必须置于US精确主机和 tdbank.com 之后。www.td.com 以及全球公共资源以共享金融兜底；不能把 easyweb.td.com 加拿大业务强制美国。",
+      "recommended_route": "金融（共享）",
+      "kind": "shared",
+      "observed_hosts": []
+    },
+    {
+      "name": "East West businessBridge shared",
+      "suffixes": [],
+      "exact": [
+        "eastwest.bankonline.com"
+      ],
+      "sources": [
+        "https://www.eastwestbank.com/en/login"
+      ],
+      "notes": "同主机同时标美国 businessBridge Premier 和 Premier HK。普通域名规则无法根据账户地区拆分。",
+      "recommended_route": "金融（共享）",
+      "kind": "shared",
+      "observed_hosts": []
+    },
+    {
+      "name": "Wise",
+      "suffixes": [
+        "wise.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://wise.com/"
+      ],
+      "notes": "全球跨境金融服务，同域服务多个注册地区；不自动归美国或银行类别。按用户账户保持固定手选出口。",
+      "recommended_route": "金融（共享）",
+      "kind": "fintech-global",
+      "observed_hosts": []
+    },
+    {
+      "name": "Payoneer",
+      "suffixes": [
+        "payoneer.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.payoneer.com/"
+      ],
+      "notes": "全球跨境支付平台；不自动归美国银行。公开官网已核实，未研究登录后依赖。",
+      "recommended_route": "金融（共享）",
+      "kind": "fintech-global",
+      "observed_hosts": []
+    }
+  ]
+}

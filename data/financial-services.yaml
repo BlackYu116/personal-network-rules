@@ -1,0 +1,1005 @@
+# 金融域名维护源；修改后运行 scripts/gen_financial_rules.py。
+reviewed_on: '2026-10-17'
+scope: 官方公开域名与入口；不是实际账户/所有App后端验收。地区表示服务使用策略，非域名IP地理推断。
+services:
+- name: 既有地区基线 bank-cn
+  policy: bank-cn
+  suffixes:
+  - hsbc.com.cn
+  - hsbcqh.com.cn
+  - hsbcinsurance.com.cn
+  - cn.secure.hsbcnet.com
+  - icbc.com.cn
+  - ccb.com
+  - boc.cn
+  - abchina.com
+  - cmbchina.com
+  - bankcomm.com
+  exact: []
+  sources:
+  - https://github.com/BlackYu116/personal-network-rules/blob/03022e2/docs/bank-regions.md
+  notes: 保留上一版已核实域名；新增机构及公开入口见后续记录。
+  test_hosts: []
+- name: 既有地区基线 bank-hk
+  policy: bank-hk
+  suffixes:
+  - hsbc.com.hk
+  - hk.personal-banking.hsbc.com
+  - bank.za.group
+  - bank-invest.za.group
+  - business-internet-banking.za.group
+  - cdn.za.group
+  exact: []
+  sources:
+  - https://github.com/BlackYu116/personal-network-rules/blob/03022e2/docs/bank-regions.md
+  notes: 保留上一版已核实域名；新增机构及公开入口见后续记录。
+  test_hosts: []
+- name: 既有地区基线 bank-us
+  policy: bank-us
+  suffixes:
+  - us.hsbc.com
+  - us.personal-banking.hsbc.com
+  exact: []
+  sources:
+  - https://github.com/BlackYu116/personal-network-rules/blob/03022e2/docs/bank-regions.md
+  notes: 保留上一版已核实域名；新增机构及公开入口见后续记录。
+  test_hosts: []
+- name: 既有地区基线 bank-sg
+  policy: bank-sg
+  suffixes:
+  - hsbc.com.sg
+  - dbs.com.sg
+  - posb.com.sg
+  - ocbc.com
+  - uob.com.sg
+  - uob.sg
+  - uobgroup.com.sg
+  - starryblu.com
+  exact:
+  - h2static.wotransfer.com
+  - starryblu-public.oss-accelerate.aliyuncs.com
+  sources:
+  - https://github.com/BlackYu116/personal-network-rules/blob/03022e2/docs/bank-regions.md
+  notes: 保留上一版已核实域名；新增机构及公开入口见后续记录。
+  test_hosts: []
+- name: 汇丰香港 HSBC Hong Kong
+  policy: bank-hk
+  suffixes:
+  - hsbc.com.hk
+  exact: []
+  sources:
+  - https://www.hsbc.com.hk/
+  notes: 主站公开链接覆盖香港个人、企业和投资入口；hsbcnet.com为全球共享入口，不可整域认定香港。
+  test_hosts:
+  - www.hsbc.com.hk
+- name: 中银香港 BOCHK
+  policy: bank-hk
+  suffixes:
+  - bochk.com
+  exact: []
+  sources:
+  - https://www.bochk.com/en/home.html
+  notes: 香港品牌域；不可将boc.cn或bankofchina.com全域归香港。
+  test_hosts:
+  - www.bochk.com
+- name: 工银亚洲 ICBC Asia
+  policy: bank-hk
+  suffixes:
+  - icbcasia.com
+  exact: []
+  sources:
+  - https://www.icbcasia.com/hk/en/personal/internet-banking/default.html
+  notes: 已核实香港官网与个人网银服务页；icbc.com.cn全域不应归香港，App中未公开的共享后端仍待连接证据。
+  test_hosts:
+  - www.icbcasia.com
+- name: 建行亚洲 CCB Asia
+  policy: bank-hk
+  suffixes:
+  - asia.ccb.com
+  exact: []
+  sources:
+  - https://www.asia.ccb.com/logon/en/
+  - https://online.asia.ccb.com/PersonalHKWeb/onboardingprocess/OnBoardingProcessController.jpf?lang=english&type=activation
+  notes: asia.ccb.com覆盖已见online.asia.ccb.com个人网银，保持ccb.com其他地区边界。CCB HK&MO App同时提供香港及澳门服务。
+  test_hosts:
+  - www.asia.ccb.com
+  - online.asia.ccb.com
+- name: 恒生 Hang Seng
+  policy: bank-hk
+  suffixes:
+  - hangseng.com
+  exact: []
+  sources:
+  - https://www.hangseng.com/en-hk/personal/digital/ebanking/
+  - https://www.hangseng.com/en-hk/security/
+  notes: 官方个人e-Banking主站和登录页。hangseng.com.cn未归香港。
+  test_hosts:
+  - www.hangseng.com
+- name: 东亚银行 BEA
+  policy: bank-hk
+  suffixes:
+  - hkbea.com
+  exact: []
+  sources:
+  - https://www.hkbea.com/html/en/bea-personal-banking-bea-online.html
+  notes: 官方公告2026-07-13起新BEA Online域online.hkbea.com；不覆盖hkbea.com.cn或hkbea.com.sg。hkbea.com含集团资料，按香港零售入口归类。
+  test_hosts:
+  - online.hkbea.com
+  - www.hkbea.com
+- name: 花旗香港 Citibank Hong Kong
+  policy: bank-hk
+  suffixes:
+  - citibank.com.hk
+  exact: []
+  sources:
+  - https://www.citibank.com.hk/english/personal-banking/services/online-and-mobile/
+  - https://www.citibank.com.hk/HKGCB/JPS/portal/Index.action
+  notes: 香港独立域；citi.com全球共享部分不据此归香港。
+  test_hosts:
+  - www.citibank.com.hk
+- name: 星展香港 DBS Hong Kong
+  policy: bank-hk
+  suffixes:
+  - dbs.com.hk
+  - hk.dbs.com
+  exact: []
+  sources:
+  - https://www.dbs.com.hk/personal/default.page
+  - https://internet-banking.hk.dbs.com/crl_verify_userid.html?isReDirectPweb=000000000000409
+  notes: 主站Login直接指向internet-banking.hk.dbs.com，hk.dbs.com仅地域子树；不把dbs.com全域归香港。
+  test_hosts:
+  - internet-banking.hk.dbs.com
+  - www.dbs.com.hk
+- name: 招商永隆 CMB Wing Lung
+  policy: bank-hk
+  suffixes:
+  - cmbwinglungbank.com
+  exact: []
+  sources:
+  - https://www.cmbwinglungbank.com/ibanking/logon/NbHomLogonInp.jsp?mcp_language=en
+  - https://cn.cmbwinglungbank.com/corporbank/login.html
+  notes: 重要内地例外：cn.cmbwinglungbank.com明确为内地分行企业网银，应先于香港父后缀匹配到内地组。
+  test_hosts:
+  - www.cmbwinglungbank.com
+- name: 中信银行国际 CNCBI
+  policy: bank-hk
+  suffixes:
+  - cncbinternational.com
+  exact: []
+  sources:
+  - https://www.cncbinternational.com/
+  - https://www.cncbinternational.com/personal/e-banking/inmotion/en/support/index.html
+  notes: inMotion/inVest官方服务文档；母行citicbank.com不纳入香港后缀。
+  test_hosts:
+  - www.cncbinternational.com
+- name: 南洋商业 Nanyang Commercial Bank
+  policy: bank-hk
+  suffixes:
+  - ncb.com.hk
+  exact: []
+  sources:
+  - https://www.ncb.com.hk/nanyang_bank/eng/html/person_online_bank.html
+  - https://pib.ncb.com.hk/
+  - https://cpb.ncb.com.hk/
+  notes: 旧pib.ncb.com.hk页面公开指向新个人pnb.ncb.com.hk/企业cpb.ncb.com.hk；不包括ncbchina.cn。
+  test_hosts:
+  - pnb.ncb.com.hk
+  - www.ncb.com.hk
+  - pib.ncb.com.hk
+  - cpb.ncb.com.hk
+- name: 集友 Chiyu
+  policy: bank-hk
+  suffixes:
+  - chiyubank.com
+  exact: []
+  sources:
+  - https://www.chiyubank.com/cyben/index/bazx/bazx/index.shtml
+  notes: 官方保安页明确列出银行网址。
+  test_hosts:
+  - www.chiyubank.com
+- name: 创兴 Chong Hing
+  policy: bank-hk
+  suffixes:
+  - chbank.com
+  exact: []
+  sources:
+  - https://www.chbank.com/data/media/document/IB18_single_user_app.pdf
+  - https://www.ibanking.chbank.com/webbank/
+  notes: 公开个人网银登录host及官网申请表；未验证登录后可用性。
+  test_hosts:
+  - www.ibanking.chbank.com
+  - www.chbank.com
+- name: 上海商业 Shanghai Commercial Bank
+  policy: bank-hk
+  suffixes:
+  - shacombank.com.hk
+  exact: []
+  sources:
+  - https://www.shacombank.com.hk/
+  - https://www.shacombank.com.hk/tch/main/tips/images/press_20260213_fraudulent.pdf
+  notes: 香港上海商业银行，不等同台湾上海商银或内地上海银行；不扩大至其他品牌域。
+  test_hosts:
+  - www.shacombank.com.hk
+- name: 大新 Dah Sing
+  policy: bank-hk
+  suffixes:
+  - dahsing.com
+  exact: []
+  sources:
+  - https://www.dahsing.com/html/en/digital/ebanking/mobile_banking.html
+  - https://www.dahsing.com/eBank/loginInput.do
+  - https://m.dahsing.com/mbanking/pages/login/login.jsp?langPref=en_US
+  notes: 已核实网页/移动银行公开入口。dahsing.com.hk或其他未核实域不猜测添加。
+  test_hosts:
+  - www.dahsing.com
+  - m.dahsing.com
+- name: 富邦香港 Fubon Bank Hong Kong
+  policy: bank-hk
+  suffixes:
+  - fubonbank.com.hk
+  exact: []
+  sources:
+  - https://www.fubonbank.com.hk/en/online-services/e-banking/home.html
+  - https://www.ebank.fubonbank.com.hk/loginpage0128EN.html
+  notes: 此为香港注册富邦银行；台湾富邦fubon.com及其香港分行属于另一域名边界，不能整域归香港。
+  test_hosts:
+  - www.ebank.fubonbank.com.hk
+  - www.fubonbank.com.hk
+- name: 华侨香港 OCBC Hong Kong
+  policy: bank-hk
+  suffixes:
+  - ocbc.com.hk
+  exact: []
+  sources:
+  - https://www.ocbc.com.hk/group/gateway
+  notes: 主页个人登录到ebanking.ocbc.com.hk；企业登录velocity.ocbc.com为跨地区共享，不归香港。官网公告香港核心系统维护2026-10-16 20:00至10-18 12:00 HKT；该期间不可用不能仅归因分流。
+  test_hosts:
+  - ebanking.ocbc.com.hk
+  - www.ocbc.com.hk
+- name: 交通银行香港 BOCOM Hong Kong
+  policy: bank-hk
+  suffixes:
+  - bankcomm.com.hk
+  - hk.bankcomm.com
+  exact: []
+  sources:
+  - https://www.bankcomm.com.hk/
+  - https://hk.bankcomm.com/hk/shtml/hk/en/2005773/2005774/list.shtml
+  - https://eb.hk.bankcomm.com/eb/gateWay/gwApplyCreditCard.do?locale=en_TW&xchannel=1
+  notes: HK独立域及地域子树；bankcomm.com全球母域不整域归香港。
+  test_hosts:
+  - hk.bankcomm.com
+  - www.bankcomm.com.hk
+  - eb.hk.bankcomm.com
+- name: 象象银行 EleBank，前天星 Airstar
+  policy: bank-hk
+  suffixes:
+  - airstarbank.com
+  - elebank.com
+  exact: []
+  sources:
+  - https://www.airstarbank.com/
+  - https://www.elebank.com/en-hk/index.html
+  - https://www.elebank.com/en-hk/media-centre.html
+  notes: 检查当日旧域301/重定向到elebank.com；官网当前名称EleBank，银行代码395，API文档链接api.platform.elebank.com。此为App银行，无网页个人登录验证。
+  test_hosts:
+  - www.airstarbank.com
+  - www.elebank.com
+- name: 富融 Fusion Bank
+  policy: bank-hk
+  suffixes:
+  - fusionbank.com
+  exact: []
+  sources:
+  - https://www.fusionbank.com/
+  notes: 官方主页；App银行，后端覆盖未做运行抓包。
+  test_hosts:
+  - www.fusionbank.com
+- name: Mox Bank
+  policy: bank-hk
+  suffixes:
+  - mox.com
+  exact: []
+  sources:
+  - https://mox.com/
+  notes: 官方主页by Standard Chartered；不扩大为渣打母域。
+  test_hosts:
+  - mox.com
+- name: 平安数字银行国际 Ping An Digital Bank，前PAO
+  policy: bank-hk
+  suffixes:
+  - paob.com.hk
+  - pingandb.com
+  exact: []
+  sources:
+  - https://www.paob.com.hk/
+  - https://www.pingandb.com/en/index.html
+  notes: 旧域当日重定向到pingandb.com；不扩大至pingan.com母集团全域。
+  test_hosts:
+  - www.paob.com.hk
+  - www.pingandb.com
+- name: 蚂蚁银行香港 Ant Bank Hong Kong
+  policy: bank-hk
+  suffixes:
+  - antbank.hk
+  exact: []
+  sources:
+  - https://www.antbank.hk/
+  notes: 香港官方独立域；不扩大至alipay.com全球支付域。
+  test_hosts:
+  - www.antbank.hk
+- name: 汇立 WeLab Bank
+  policy: bank-hk
+  suffixes:
+  - welab.bank
+  exact: []
+  sources:
+  - https://www.welab.bank/
+  - https://www.welab.bank/en/about/
+  notes: 官方银行域，不含WeLab集团其他地区金融业务。
+  test_hosts:
+  - www.welab.bank
+- name: 理慧 livi Bank
+  policy: bank-hk
+  suffixes:
+  - livibank.com
+  exact: []
+  sources:
+  - https://www.livibank.com/
+  notes: 官方香港银行主页；App后台域覆盖未做运行抓包。
+  test_hosts:
+  - www.livibank.com
+- name: 众安 ZA Bank
+  policy: bank-hk
+  suffixes:
+  - bank.za.group
+  exact:
+  - cdn.za.group
+  sources:
+  - https://bank.za.group/en
+  - https://cdn.za.group/bank/za-bank-portal-web/assets/files/en/terms/Terms%20of%20Use%20of%20Website.pdf?v=20191220
+  - https://www.za.group/en
+  notes: bank.za.group是银行站，cdn.za.group公开银行材料共享CDN。za.group另含保险、科技和其他集团业务；全域归香港的现有规则应明确是集团级选择，不能称银行独占。
+  test_hosts:
+  - bank.za.group
+  - cdn.za.group
+- name: 招商永隆内地分行
+  policy: bank-cn-priority
+  suffixes:
+  - cn.cmbwinglungbank.com
+  exact: []
+  sources:
+  - https://cn.cmbwinglungbank.com/corporbank/login.html
+  notes: 官方页明确为招商永隆内地分行企业网上银行；应先于cmbwinglungbank.com香港后缀。
+  test_hosts: []
+- name: 跨地区共享银行入口
+  policy: finance
+  suffixes:
+  - sc.com
+  - standardchartered.com
+  - dbs.com
+  exact: []
+  sources:
+  - https://www.sc.com/hk/
+  - https://www.sc.com/sg/
+  - https://www.dbs.com.hk/
+  notes: 全球共享入口不能按HTTPS路径区分；香港专用子域仍优先。
+  test_hosts: []
+- name: OCBC Velocity共享企业入口
+  policy: finance-priority
+  suffixes: []
+  exact:
+  - velocity.ocbc.com
+  sources:
+  - https://www.ocbc.com.hk/
+  notes: 香港官网链接此入口，但OCBC集团跨地区共用；先于ocbc.com新加坡后缀。
+  test_hosts: []
+- name: Mercury
+  policy: bank-us
+  suffixes:
+  - mercury.com
+  exact: []
+  sources:
+  - https://mercury.com/
+  notes: 美国金融科技公司，并非银行；官网明确银行服务由合作银行提供。公开登录 app.mercury.com；不需要添加合作银行整个域名。
+  test_hosts:
+  - app.mercury.com
+  - support.mercury.com
+  - mercury.com
+- name: East West Bank 美国华美银行
+  policy: bank-us
+  suffixes:
+  - eastwestbank.com
+  - velobank.com
+  exact:
+  - depositbridgeplus-eastwestbank.fisglobal.com
+  sources:
+  - https://www.eastwestbank.com/en/login
+  - https://www.velobank.com/
+  notes: 美国华美及 Velo，非菲律宾 eastwestbanker.com。eastwest.bankonline.com 被官网同时用作美国及香港 businessBridge，放共享入口记录，不能将 bankonline.com
+    全域归美国。
+  test_hosts:
+  - online.eastwestbank.com
+  - online.velobank.com
+  - business.eastwestbank.com
+  - depositbridgeplus-eastwestbank.fisglobal.com
+  - www.eastwestbank.com
+  - www.velobank.com
+- name: Chase US
+  policy: bank-us
+  suffixes:
+  - chase.com
+  exact: []
+  sources:
+  - https://www.chase.com/
+  notes: 官网登录 secure.chase.com；Chase UK 使用 chase.co.uk 不被该规则覆盖。勿顺便扩大到全球 jpmorgan.com。
+  test_hosts:
+  - secure.chase.com
+  - apix.chase.com
+  - publicapi.chase.com
+  - asset.chase.com
+  - www.chase.com
+- name: Bank of America
+  policy: bank-us
+  suffixes:
+  - bankofamerica.com
+  - bac-assets.com
+  exact: []
+  sources:
+  - https://www.bankofamerica.com/
+  notes: 登录及静态/API资源均在官网HTML公开出现；bac-assets.com 同时承载 Merrill 资源，如美国券商与银行选不同节点需注意共享资产边界。
+  test_hosts:
+  - secure.bankofamerica.com
+  - api1.bac-assets.com
+  - secure1.bac-assets.com
+  - www1.bac-assets.com
+  - scripts-olui2.fs.ml.bac-assets.com
+  - www.bankofamerica.com
+- name: Wells Fargo
+  policy: bank-us
+  suffixes:
+  - wellsfargo.com
+  - wellsfargomedia.com
+  - wf.com
+  - wfinterface.com
+  exact: []
+  sources:
+  - https://www.wellsfargo.com/
+  notes: 登录 connect.secure.wellsfargo.com、图片 www17.wellsfargomedia.com；wf.com、wfinterface.com 来源为官网 Content-Security-Policy
+    allowlist，证明官方声明允许使用，未验证这些域名所有主机及每项App实际调用。
+  test_hosts:
+  - connect.secure.wellsfargo.com
+  - oam.wellsfargo.com
+  - www17.wellsfargomedia.com
+  - www.wellsfargo.com
+- name: Capital One
+  policy: bank-us
+  suffixes:
+  - capitalone.com
+  exact: []
+  sources:
+  - https://www.capitalone.com/
+  notes: 官网登录 verified.capitalone.com；英国、加拿大使用另外的国别域。没有自动加入购物和旅行域名。
+  test_hosts:
+  - verified.capitalone.com
+  - ecm.capitalone.com
+  - www.capitalone.com
+- name: U.S. Bank
+  policy: bank-us
+  suffixes:
+  - usbank.com
+  exact: []
+  sources:
+  - https://www.usbank.com/index.html
+  - https://www.usbank.com/customer-service/knowledge-base/KB0069481.html
+  notes: 官网HTML 200并包含 auth.usbank.com、onlinebanking.usbank.com。web工具初次取主页超时，直接HTTP及官方知识库补核。
+  test_hosts:
+  - auth.usbank.com
+  - onlinebanking.usbank.com
+  - onboarding.usbank.com
+  - www.usbank.com
+- name: PNC
+  policy: bank-us
+  suffixes:
+  - pnc.com
+  exact: []
+  sources:
+  - https://www.pnc.com/en/personal-banking.html
+  notes: 公开官网的注册、找回入口均指向 secure.pnc.com；直接HTTP读取超时，但web工具官方页可读。未扩大到 omniasp.com 或其他共享服务全域。
+  test_hosts:
+  - secure.pnc.com
+  - ihub.pnc.com
+  - www.pnc.com
+- name: TD Bank US
+  policy: bank-us
+  suffixes:
+  - tdbank.com
+  - tdfitloan.com
+  exact:
+  - homelending.td.com
+  - etreasury.td.com
+  - createpersonalprofile.td.com
+  - tdbank.billeriq.com
+  sources:
+  - https://www.td.com/us/en/personal-banking
+  notes: 美国官网明确链接这些个人/商业银行入口。www.td.com 同主机以 /us 和加拿大路径区分，不纳入美国suffix。easyweb.td.com 为加拿大，不应归美国。第三方企业财富共享服务不扩大为全域。
+  test_hosts:
+  - onlinebanking.tdbank.com
+  - businessconnect.tdbank.com
+  - digitalexpress.tdbank.com
+  - tdfx.tdbank.com
+  - trade.tdbank.com
+- name: Discover
+  policy: bank-us
+  suffixes:
+  - discover.com
+  - discoverbank.com
+  exact: []
+  sources:
+  - https://www.discover.com/online-banking/
+  notes: bank.discover.com 为公开账户入口，discoverbank.com 由官网HTML引用。官网称继续使用Discover网站/App管理账户，保留该品牌覆盖。discoverglobalnetwork.com
+    是全球支付网络，不自动归美国银行。
+  test_hosts:
+  - bank.discover.com
+  - mapi.discover.com
+  - securedocapi.discover.com
+  - www.discoverbank.com
+  - www.discover.com
+- name: Ally
+  policy: bank-us
+  suffixes:
+  - ally.com
+  exact: []
+  sources:
+  - https://www.ally.com/
+  notes: 美国银行官网直接链到 secure.ally.com；域下同时含投资和汽车金融业务，域名规则不能再按产品拆分。
+  test_hosts:
+  - secure.ally.com
+  - myportal.ally.com
+  - media.ally.com
+  - www.ally.com
+- name: SoFi US
+  policy: bank-us
+  suffixes:
+  - sofi.com
+  exact: []
+  sources:
+  - https://www.sofi.com/
+  - https://support.sofi.com/hc/en-us/articles/4423063919245-How-do-I-access-SoFi-Relay
+  notes: SoFi美国银行与投资/贷款共享 sofi.com；官网及官方帮助核实该域，直接HTTP为403，未登录及测试App。
+  test_hosts:
+  - www.sofi.com
+  - support.sofi.com
+- name: Citi US dedicated retail
+  policy: bank-us
+  suffixes:
+  - citibankonline.com
+  exact: []
+  sources:
+  - https://www.citi.com/online-services/bill-payment
+  - https://online.citi.com/US/ag/bank/registration/set-up-online-access
+  - https://citiretailservices.citibankonline.com/RSnextgen/svc/common/template.action?view=noCookieError
+  notes: www.citi.com 可作为美国零售官网精确入口但其也提供国别跳转；citi.com 全域包含全球/机构服务，不建议全域归美国。online.citi.com 的 /US 页面是美国入口但同主机国别独占未证明，应放共享金融。不可覆盖
+    citibank.com.hk/citibank.com.sg 等国别域。 未将www.citi.com精确分美国，因为同主机可按路径选择国家。
+  test_hosts:
+  - citiretailservices.citibankonline.com
+- name: Charles Schwab Bank
+  policy: broker-us
+  suffixes:
+  - schwab.com
+  exact: []
+  sources:
+  - https://www.schwab.com/bank
+  notes: Schwab Bank和Schwab券商共用 client.schwab.com 登录，无法按URL路径拆分；应与嘉信/thinkorswim共同归美国券商组，或继续金融组，不能同时配置冲突域名规则。
+  test_hosts:
+  - client.schwab.com
+  - www.schwab.com
+- name: Brex
+  policy: bank-us
+  suffixes:
+  - brex.com
+  exact: []
+  sources:
+  - https://www.brex.com/
+  - https://www.brex.com/about/
+  notes: 金融科技公司并非银行；公开官网HTML链接 dashboard.brex.com。作为美国企业金融平台可用美国出口，但产品提供全球业务，不声称所有账户美国专属。
+  test_hosts:
+  - dashboard.brex.com
+  - status.brex.com
+  - www.brex.com
+- name: Ramp
+  policy: bank-us
+  suffixes:
+  - ramp.com
+  exact: []
+  sources:
+  - https://ramp.com/
+  - https://ramp.com/business-banking
+  notes: 金融科技/支出管理平台并非银行，银行存款由合作银行提供；官方HTML和CSP均指 app.ramp.com。作为美国企业金融可用美国出口，不新增合作银行全域。
+  test_hosts:
+  - app.ramp.com
+  - support.ramp.com
+  - ramp.com
+- name: Citi shared/global
+  policy: finance
+  suffixes:
+  - citi.com
+  - citibank.com
+  exact: []
+  sources:
+  - https://www.citi.com/
+  - https://online.citi.com/US/ag/bank/registration/set-up-online-access
+  - https://www.citibank.com.hk/portal/home_english/hkcb_Home.htm
+  notes: citi.com/citibank.com跨地区共享；保留金融兜底。香港citibank.com.hk和已核实美国专用入口分别优先，不把同主机国家路径硬分地区。
+  test_hosts:
+  - online.citi.com
+  - www.citi.com
+- name: American Express global
+  policy: finance
+  suffixes:
+  - americanexpress.com
+  exact: []
+  sources:
+  - https://www.americanexpress.com/en-us/account/login
+  - https://www.americanexpress.com/en-hk/account/login/
+  - https://www.americanexpress.com/en-us/banking/online-savings/account/
+  notes: 美国银行/信用卡及香港登录均使用同一 www.americanexpress.com 主机，按 /en-us /en-hk 路径区分，Clash普通域名规则看不到HTTPS路径。必须保留共享手选金融组并说明用户按服务选择出口，不能将整个域名归美国。
+  test_hosts:
+  - www.americanexpress.com
+- name: TD shared/global
+  policy: finance
+  suffixes:
+  - td.com
+  exact: []
+  sources:
+  - https://www.td.com/us/en/personal-banking
+  notes: 必须置于US精确主机和 tdbank.com 之后。www.td.com 以及全球公共资源以共享金融兜底；不能把 easyweb.td.com 加拿大业务强制美国。
+  test_hosts:
+  - www.td.com
+- name: East West businessBridge shared
+  policy: finance
+  suffixes: []
+  exact:
+  - eastwest.bankonline.com
+  sources:
+  - https://www.eastwestbank.com/en/login
+  notes: 同主机同时标美国 businessBridge Premier 和 Premier HK。普通域名规则无法根据账户地区拆分。
+  test_hosts: []
+- name: Wise
+  policy: finance
+  suffixes:
+  - wise.com
+  exact: []
+  sources:
+  - https://wise.com/
+  notes: 全球跨境金融服务，同域服务多个注册地区；不自动归美国或银行类别。按用户账户保持固定手选出口。
+  test_hosts:
+  - wise.com
+- name: Payoneer
+  policy: finance
+  suffixes:
+  - payoneer.com
+  exact: []
+  sources:
+  - https://www.payoneer.com/
+  notes: 全球跨境支付平台；不自动归美国银行。公开官网已核实，未研究登录后依赖。
+  test_hosts:
+  - www.payoneer.com
+- name: Longbridge / LongPort
+  policy: broker-hk
+  suffixes:
+  - longbridge.cloud
+  - longbridge.cn
+  - longbridge.com
+  - longbridge.global
+  - longbridge.hk
+  - longbridge.sg
+  - longbridgeapp.com
+  - longbridgehk.com
+  - longportapp.com
+  - longportapp.cn
+  - lbctrl.com
+  - lbkrs.com
+  - wbrks.com
+  exact: []
+  sources:
+  - https://longbridge.com/hk
+  - https://open.longbridge.com/docs/getting-started
+  - https://github.com/longbridge/openapi-go/blob/main/CHANGELOG.md
+  - https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/longbridge.yaml
+  notes: User explicitly requests Longbridge HK routing. Entire shared Longbridge family follows HK preference,
+    including .sg and CN API access domains. .cn is an access point, not an account jurisdiction. Homepage HTML
+    explicitly references assets.lbctrl.com, assets.lbkrs.com, assets.wbrks.com; new API/quote/trade under longbridge.com/.cn;
+    old longportapp.cn included for legacy SDK compatibility. Does not establish all private App endpoints or actual
+    login success.
+  test_hosts:
+  - longbridge.com
+  - open.longbridge.com
+- name: Futu Hong Kong dedicated domains
+  policy: broker-futu
+  suffixes:
+  - futuhk.com
+  - futuhk1.com
+  - futuhk2.com
+  - futuhkapp.com
+  exact: []
+  sources:
+  - https://www.futuhk.com/
+  - https://www.futuhk.com/en/about-us
+  - https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/futu.yaml
+  notes: Root official site and upstream dedicated HK names. futunn.com and futustatic.com are shared services;
+    do not assign the whole Futu/Moomoo upstream list to HK.
+  test_hosts:
+  - www.futuhk.com
+  routing_decision: 最终采用品牌共享策略组，所有列明地区网站与共享API/CDN同出口；默认跟随香港券商，可手动切到其他地区或具体节点。不是自动按账户国家分类。
+- name: Webull Hong Kong
+  policy: broker-webull
+  suffixes:
+  - webull.hk
+  exact:
+  - hktrade.wbsecurities.com
+  sources:
+  - https://www.webull.hk/
+  notes: Official homepage links hktrade.wbsecurities.com. Shared webullfintech.com serves both HK and US; do not
+    classify root by country.
+  test_hosts:
+  - www.webull.hk
+  routing_decision: 最终采用品牌共享策略组，所有列明地区网站与共享API/CDN同出口；默认跟随香港券商，可手动切到其他地区或具体节点。不是自动按账户国家分类。
+- name: Phillip Hong Kong
+  policy: broker-hk
+  suffixes:
+  - phillip.com.hk
+  - poems.com.hk
+  exact: []
+  sources:
+  - https://www.phillip.com.hk/
+  - https://www.poems.com.hk/zh-hk
+  notes: phillip.com.hk currently redirects to poems.com.hk.
+  test_hosts:
+  - www.phillip.com.hk
+  - www.poems.com.hk
+- name: Tiger Hong Kong dedicated domain
+  policy: broker-tiger
+  suffixes:
+  - tigerbrokers.com.hk
+  exact: []
+  sources:
+  - https://www.itiger.com/hk/en/
+  notes: Official HK entity and contact domain. itiger.com/hk and /sg share the same hostname; hostname rules cannot
+    distinguish paths.
+  test_hosts: []
+  routing_decision: 最终采用品牌共享策略组，所有列明地区网站与共享API/CDN同出口；默认跟随香港券商，可手动切到其他地区或具体节点。不是自动按账户国家分类。
+- name: Schwab / thinkorswim
+  policy: broker-us
+  suffixes:
+  - schwab.com
+  - aboutschwab.com
+  - schwabassetmanagement.com
+  - schwabcdn.com
+  - schwabplan.com
+  - thinkorswim.com
+  - tos.mx
+  - schwab.tech
+  - schwabcloud.com
+  - tdameritrade.com
+  - ameritrade.com
+  exact: []
+  sources:
+  - https://www.schwab.com/trading/thinkorswim/download
+  - https://toslc.thinkorswim.com/center/howToTos/thinkManual/Tools/Sharing
+  - https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/schwab.yaml
+  notes: US group based on user Schwab/TOS usage. Official download page links tosmediaserver.schwab.com and trade.thinkorswim.com.
+    Existing schwab.tech/schwabcloud.com supplementary rules retain prior evidence. Upstream also includes schwab.com.hk/.com.sg/.co.uk;
+    assign those dedicated regional websites separately if desired. Shared schwab.com login cannot infer account
+    country.
+  test_hosts:
+  - www.schwab.com
+  - toslc.thinkorswim.com
+- name: Fidelity US
+  policy: broker-us
+  suffixes:
+  - fidelity.com
+  exact: []
+  sources:
+  - https://www.fidelity.com/
+  notes: US official investing site. Do not use fidelityinternational.com for this entry.
+  test_hosts:
+  - www.fidelity.com
+- name: ETrade
+  policy: broker-us
+  suffixes:
+  - etrade.com
+  exact: []
+  sources:
+  - https://us.etrade.com/
+  notes: Official US retail brokerage and login site; root includes us.etrade.com.
+  test_hosts:
+  - us.etrade.com
+- name: Robinhood
+  policy: broker-us
+  suffixes: []
+  exact:
+  - robinhood.com
+  - cdn.robinhood.com
+  - docs.robinhood.com
+  sources:
+  - https://robinhood.com/
+  notes: 'Official root redirects to /us/en and HTML references cdn.robinhood.com/docs.robinhood.com. Other countries
+    also use paths on robinhood.com: this US preference applies that shared root host, cannot infer account country.
+    No guessed private API domains added.'
+  test_hosts:
+  - robinhood.com
+- name: Webull US website
+  policy: broker-webull
+  suffixes:
+  - webull.com
+  exact: []
+  sources:
+  - https://www.webull.com/
+  notes: US site and app.webull.com. Shared trading, quotes and static services on webullfintech.com must remain
+    shared.
+  test_hosts:
+  - www.webull.com
+  routing_decision: 最终采用品牌共享策略组，所有列明地区网站与共享API/CDN同出口；默认跟随香港券商，可手动切到其他地区或具体节点。不是自动按账户国家分类。
+- name: Firstrade
+  policy: broker-us
+  suffixes:
+  - firstrade.com
+  exact: []
+  sources:
+  - https://www.firstrade.com/
+  notes: US brokerage official public site.
+  test_hosts:
+  - www.firstrade.com
+- name: Vanguard US website
+  policy: broker-us
+  suffixes: []
+  exact:
+  - investor.vanguard.com
+  - logon.vanguard.com
+  - personal1.vanguard.com
+  - web-registration.vanguard.com
+  - cdn.web.vanguard.com
+  - constellation-static.web.vanguard.com
+  - mc3-static-assets.web.vanguard.com
+  - n4v.web.vanguard.com
+  sources:
+  - https://investor.vanguard.com/
+  notes: All exact hosts referenced by official US investor homepage HTML. Vanguard root has multinational services;
+    avoid classifying every vanguard.com hostname US.
+  test_hosts:
+  - investor.vanguard.com
+- name: Phillip Singapore
+  policy: broker-sg
+  suffixes:
+  - poems.com.sg
+  - phillip.com.sg
+  exact: []
+  sources:
+  - https://www.poems.com.sg/
+  - https://www.phillip.com.sg/
+  notes: Official Singapore brokerage and PhillipCapital sites.
+  test_hosts:
+  - www.poems.com.sg
+  - www.phillip.com.sg
+- name: Tiger Singapore dedicated domain
+  policy: broker-tiger
+  suffixes:
+  - tigerbrokers.com.sg
+  exact: []
+  sources:
+  - https://www.itiger.com/sg/
+  notes: Official SG HTML links www.tigerbrokers.com.sg and developer.tigerbrokers.com.sg. itiger.com itself shared
+    by region URL path.
+  test_hosts: []
+  routing_decision: 最终采用品牌共享策略组，所有列明地区网站与共享API/CDN同出口；默认跟随香港券商，可手动切到其他地区或具体节点。不是自动按账户国家分类。
+- name: Futu Singapore dedicated domain
+  policy: broker-futu
+  suffixes:
+  - futusg.com
+  exact: []
+  sources:
+  - https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/futu.yaml
+  - https://www.moomoo.com/sg/
+  notes: Dedicated legacy SG domain from upstream; moomoo.com/sg response was 403, no authenticated testing. Shared
+    moomoo.com cannot infer SG account merely from website path.
+  test_hosts: []
+  routing_decision: 最终采用品牌共享策略组，所有列明地区网站与共享API/CDN同出口；默认跟随香港券商，可手动切到其他地区或具体节点。不是自动按账户国家分类。
+- name: Futu / Moomoo shared services
+  policy: broker-futu
+  suffixes:
+  - futu.cn
+  - futu.link
+  - futu5.com
+  - futuesop.com
+  - futufin.com
+  - futuhn.com
+  - futuholdings.com
+  - futuniuniu.com
+  - futunn.com
+  - futuoa.com
+  - futustatic.com
+  - fututrade.com
+  - moomoo.com
+  - moomooequity.com
+  - moomootrustee.com
+  exact: []
+  sources:
+  - https://www.futuhk.com/
+  - https://www.moomoo.com/sg/
+  - https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/futu.yaml
+  notes: HK homepage references passport.futunn.com, q.futunn.com and cdn.futustatic.com; Moomoo SG public response
+    also references cdn.futustatic.com. Keep shared hosts in manually selectable general finance unless user chooses
+    whole family HK/SG.
+  test_hosts:
+  - www.moomoo.com
+  routing_decision: 最终采用品牌共享策略组，所有列明地区网站与共享API/CDN同出口；默认跟随香港券商，可手动切到其他地区或具体节点。不是自动按账户国家分类。
+- name: Webull shared service hosts
+  policy: broker-webull
+  suffixes:
+  - webullfintech.com
+  exact: []
+  sources:
+  - https://www.webull.hk/
+  - https://www.webull.com/
+  notes: Both official homepages reference quotes-gw.webullfintech.com, trade.webullfintech.com and wbstatic.webullfintech.com.
+    Shared same host cannot be split by account region.
+  test_hosts: []
+  routing_decision: 最终采用品牌共享策略组，所有列明地区网站与共享API/CDN同出口；默认跟随香港券商，可手动切到其他地区或具体节点。不是自动按账户国家分类。
+- name: Tiger shared services
+  policy: broker-tiger
+  suffixes:
+  - itiger.com
+  - itigerup.com
+  - tigerfintech.com
+  - tigerbbs.com
+  exact: []
+  sources:
+  - https://www.itiger.com/sg/
+  - https://www.itiger.com/hk/en/
+  notes: Official SG page references download.tigerfintech.com, da.tigerfintech.com, static.tigerbbs.com and www.itigerup.com.
+    itiger.com region lives in URL path. Do not assign whole family to HK or SG absent user preference.
+  test_hosts:
+  - www.itiger.com
+  routing_decision: 最终采用品牌共享策略组，所有列明地区网站与共享API/CDN同出口；默认跟随香港券商，可手动切到其他地区或具体节点。不是自动按账户国家分类。
+- name: Interactive Brokers shared family
+  policy: finance
+  suffixes:
+  - interactivebrokers.com
+  - interactivebrokers.ca
+  - interactivebrokers.ie
+  - ibkr.com
+  - interactivebrokers.eu
+  - ibkr.ca
+  - ibllc.com
+  - ibkr.eu
+  - ibkr.ie
+  - ibkrguides.com
+  - ibkr.com.sg
+  - ibkr.co.in
+  - interactivebrokers.co.in
+  - interactivebrokers.co.jp
+  - interactivebrokers.co.uk
+  - ibkr.com.hk
+  - interactivebrokers.com.au
+  - interactivebrokers.com.hk
+  - interactivebrokers.com.sg
+  - ibkr.com.au
+  - ibkr.co.uk
+  exact: []
+  sources:
+  - https://www.interactivebrokers.com/
+  - https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/ibkr.yaml
+  notes: Retain existing general finance provider for account/session consistency. Regional website does not prove
+    shared account gateway location; do not classify entire IBKR US.
+  test_hosts:
+  - www.interactivebrokers.com
+- name: HSBC英国和其他个人金融例外
+  policy: finance
+  suffixes:
+  - hsbc.co.uk
+  exact: []
+  sources:
+  - https://www.hsbc.co.uk/
+  notes: 未细分地区的既有个人补充，仍使用金融共享出口。
+  test_hosts: []

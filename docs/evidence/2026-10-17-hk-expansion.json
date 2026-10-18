@@ -1,0 +1,401 @@
+{
+  "checked_at": "2026-10-17",
+  "scope": "香港零售银行公开网站和官方网银入口；不含登录后的App抓包或账户可用性验证",
+  "method": "Official public webpages and indexed official security/service pages. suffixes are routing proposals bounded to regional bank-owned domains, not an exhaustive inventory of every App backend.",
+  "registry_sources": [
+    "https://vpr.hkma.gov.hk/eng/regulatory-resources/registers/register-of-ais-and-lros/",
+    "https://www.hkma.gov.hk/media/eng/doc/key-information/press-release/2026/20260507e7a1.pdf",
+    "https://www.hkicl.com.hk/files/page_file/117/12266/Full%20list%20of%20participants%20of%20Hong%20Kong%27s%20Payment%20Systems%20-%20Eng.pdf"
+  ],
+  "banks": [
+    {
+      "name": "汇丰香港 HSBC Hong Kong",
+      "suffixes": [
+        "hsbc.com.hk"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.hsbc.com.hk/"
+      ],
+      "loginURL": "https://www.hsbc.com.hk/",
+      "notes": "主站公开链接覆盖香港个人、企业和投资入口；hsbcnet.com为全球共享入口，不可整域认定香港。"
+    },
+    {
+      "name": "中银香港 BOCHK",
+      "suffixes": [
+        "bochk.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.bochk.com/en/home.html"
+      ],
+      "loginURL": "https://www.bochk.com/en/home.html",
+      "notes": "香港品牌域；不可将boc.cn或bankofchina.com全域归香港。"
+    },
+    {
+      "name": "工银亚洲 ICBC Asia",
+      "suffixes": [
+        "icbcasia.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.icbcasia.com/hk/en/personal/internet-banking/default.html"
+      ],
+      "loginURL": "https://www.icbcasia.com/hk/en/personal/internet-banking/default.html",
+      "notes": "已核实香港官网与个人网银服务页；icbc.com.cn全域不应归香港，App中未公开的共享后端仍待连接证据。"
+    },
+    {
+      "name": "建行亚洲 CCB Asia",
+      "suffixes": [
+        "asia.ccb.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.asia.ccb.com/logon/en/",
+        "https://online.asia.ccb.com/PersonalHKWeb/onboardingprocess/OnBoardingProcessController.jpf?lang=english&type=activation"
+      ],
+      "loginURL": "https://www.asia.ccb.com/logon/en/",
+      "notes": "asia.ccb.com覆盖已见online.asia.ccb.com个人网银，保持ccb.com其他地区边界。CCB HK&MO App同时提供香港及澳门服务。"
+    },
+    {
+      "name": "恒生 Hang Seng",
+      "suffixes": [
+        "hangseng.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.hangseng.com/en-hk/personal/digital/ebanking/",
+        "https://www.hangseng.com/en-hk/security/"
+      ],
+      "loginURL": "https://www.hangseng.com/en-hk/security/",
+      "notes": "官方个人e-Banking主站和登录页。hangseng.com.cn未归香港。"
+    },
+    {
+      "name": "东亚银行 BEA",
+      "suffixes": [
+        "hkbea.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.hkbea.com/html/en/bea-personal-banking-bea-online.html"
+      ],
+      "loginURL": "https://online.hkbea.com",
+      "notes": "官方公告2026-07-13起新BEA Online域online.hkbea.com；不覆盖hkbea.com.cn或hkbea.com.sg。hkbea.com含集团资料，按香港零售入口归类。"
+    },
+    {
+      "name": "花旗香港 Citibank Hong Kong",
+      "suffixes": [
+        "citibank.com.hk"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.citibank.com.hk/english/personal-banking/services/online-and-mobile/",
+        "https://www.citibank.com.hk/HKGCB/JPS/portal/Index.action"
+      ],
+      "loginURL": "https://www.citibank.com.hk/HKGCB/JPS/portal/Index.action",
+      "notes": "香港独立域；citi.com全球共享部分不据此归香港。"
+    },
+    {
+      "name": "渣打香港 Standard Chartered Hong Kong",
+      "suffixes": [],
+      "exact": [],
+      "sources": [
+        "https://www.sc.com/hk/"
+      ],
+      "loginURL": "https://www.sc.com/hk/",
+      "notes": "sc.com/hk、retail.sc.com/hk及wealth.sc.com等包含路径或全球共享host，域名分流无法可靠区分香港、新加坡等地区，保持金融共享兜底；勿添加sc.com香港后缀规则。"
+    },
+    {
+      "name": "星展香港 DBS Hong Kong",
+      "suffixes": [
+        "dbs.com.hk",
+        "hk.dbs.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.dbs.com.hk/personal/default.page",
+        "https://internet-banking.hk.dbs.com/crl_verify_userid.html?isReDirectPweb=000000000000409"
+      ],
+      "loginURL": "https://internet-banking.hk.dbs.com/crl_verify_userid.html?isReDirectPweb=000000000000409",
+      "notes": "主站Login直接指向internet-banking.hk.dbs.com，hk.dbs.com仅地域子树；不把dbs.com全域归香港。"
+    },
+    {
+      "name": "招商永隆 CMB Wing Lung",
+      "suffixes": [
+        "cmbwinglungbank.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.cmbwinglungbank.com/ibanking/logon/NbHomLogonInp.jsp?mcp_language=en",
+        "https://cn.cmbwinglungbank.com/corporbank/login.html"
+      ],
+      "loginURL": "https://www.cmbwinglungbank.com/ibanking/logon/NbHomLogonInp.jsp?mcp_language=en",
+      "notes": "重要内地例外：cn.cmbwinglungbank.com明确为内地分行企业网银，应先于香港父后缀匹配到内地组。"
+    },
+    {
+      "name": "中信银行国际 CNCBI",
+      "suffixes": [
+        "cncbinternational.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.cncbinternational.com/",
+        "https://www.cncbinternational.com/personal/e-banking/inmotion/en/support/index.html"
+      ],
+      "loginURL": "https://www.cncbinternational.com/",
+      "notes": "inMotion/inVest官方服务文档；母行citicbank.com不纳入香港后缀。"
+    },
+    {
+      "name": "南洋商业 Nanyang Commercial Bank",
+      "suffixes": [
+        "ncb.com.hk"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.ncb.com.hk/nanyang_bank/eng/html/person_online_bank.html",
+        "https://pib.ncb.com.hk/",
+        "https://cpb.ncb.com.hk/"
+      ],
+      "loginURL": "https://pnb.ncb.com.hk",
+      "notes": "旧pib.ncb.com.hk页面公开指向新个人pnb.ncb.com.hk/企业cpb.ncb.com.hk；不包括ncbchina.cn。"
+    },
+    {
+      "name": "集友 Chiyu",
+      "suffixes": [
+        "chiyubank.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.chiyubank.com/cyben/index/bazx/bazx/index.shtml"
+      ],
+      "loginURL": "https://www.chiyubank.com/",
+      "notes": "官方保安页明确列出银行网址。"
+    },
+    {
+      "name": "创兴 Chong Hing",
+      "suffixes": [
+        "chbank.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.chbank.com/data/media/document/IB18_single_user_app.pdf",
+        "https://www.ibanking.chbank.com/webbank/"
+      ],
+      "loginURL": "https://www.ibanking.chbank.com/webbank/",
+      "notes": "公开个人网银登录host及官网申请表；未验证登录后可用性。"
+    },
+    {
+      "name": "上海商业 Shanghai Commercial Bank",
+      "suffixes": [
+        "shacombank.com.hk"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.shacombank.com.hk/",
+        "https://www.shacombank.com.hk/tch/main/tips/images/press_20260213_fraudulent.pdf"
+      ],
+      "loginURL": "https://www.shacombank.com.hk/",
+      "notes": "香港上海商业银行，不等同台湾上海商银或内地上海银行；不扩大至其他品牌域。"
+    },
+    {
+      "name": "大新 Dah Sing",
+      "suffixes": [
+        "dahsing.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.dahsing.com/html/en/digital/ebanking/mobile_banking.html",
+        "https://www.dahsing.com/eBank/loginInput.do",
+        "https://m.dahsing.com/mbanking/pages/login/login.jsp?langPref=en_US"
+      ],
+      "loginURL": "https://www.dahsing.com/eBank/loginInput.do",
+      "notes": "已核实网页/移动银行公开入口。dahsing.com.hk或其他未核实域不猜测添加。"
+    },
+    {
+      "name": "富邦香港 Fubon Bank Hong Kong",
+      "suffixes": [
+        "fubonbank.com.hk"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.fubonbank.com.hk/en/online-services/e-banking/home.html",
+        "https://www.ebank.fubonbank.com.hk/loginpage0128EN.html"
+      ],
+      "loginURL": "https://www.ebank.fubonbank.com.hk/loginpage0128EN.html",
+      "notes": "此为香港注册富邦银行；台湾富邦fubon.com及其香港分行属于另一域名边界，不能整域归香港。"
+    },
+    {
+      "name": "华侨香港 OCBC Hong Kong",
+      "suffixes": [
+        "ocbc.com.hk"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.ocbc.com.hk/group/gateway"
+      ],
+      "loginURL": "https://ebanking.ocbc.com.hk/",
+      "notes": "主页个人登录到ebanking.ocbc.com.hk；企业登录velocity.ocbc.com为跨地区共享，不归香港。官网公告香港核心系统维护2026-10-16 20:00至10-18 12:00 HKT；该期间不可用不能仅归因分流。"
+    },
+    {
+      "name": "交通银行香港 BOCOM Hong Kong",
+      "suffixes": [
+        "bankcomm.com.hk",
+        "hk.bankcomm.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.bankcomm.com.hk/",
+        "https://hk.bankcomm.com/hk/shtml/hk/en/2005773/2005774/list.shtml",
+        "https://eb.hk.bankcomm.com/eb/gateWay/gwApplyCreditCard.do?locale=en_TW&xchannel=1"
+      ],
+      "loginURL": "https://hk.bankcomm.com/hk/shtml/hk/en/2005568/list.shtml",
+      "notes": "HK独立域及地域子树；bankcomm.com全球母域不整域归香港。"
+    },
+    {
+      "name": "象象银行 EleBank，前天星 Airstar",
+      "suffixes": [
+        "airstarbank.com",
+        "elebank.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.airstarbank.com/",
+        "https://www.elebank.com/en-hk/index.html",
+        "https://www.elebank.com/en-hk/media-centre.html"
+      ],
+      "loginURL": null,
+      "notes": "检查当日旧域301/重定向到elebank.com；官网当前名称EleBank，银行代码395，API文档链接api.platform.elebank.com。此为App银行，无网页个人登录验证。"
+    },
+    {
+      "name": "富融 Fusion Bank",
+      "suffixes": [
+        "fusionbank.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.fusionbank.com/"
+      ],
+      "loginURL": null,
+      "notes": "官方主页；App银行，后端覆盖未做运行抓包。"
+    },
+    {
+      "name": "Mox Bank",
+      "suffixes": [
+        "mox.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://mox.com/"
+      ],
+      "loginURL": null,
+      "notes": "官方主页by Standard Chartered；不扩大为渣打母域。"
+    },
+    {
+      "name": "平安数字银行国际 Ping An Digital Bank，前PAO",
+      "suffixes": [
+        "paob.com.hk",
+        "pingandb.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.paob.com.hk/",
+        "https://www.pingandb.com/en/index.html"
+      ],
+      "loginURL": null,
+      "notes": "旧域当日重定向到pingandb.com；不扩大至pingan.com母集团全域。"
+    },
+    {
+      "name": "蚂蚁银行香港 Ant Bank Hong Kong",
+      "suffixes": [
+        "antbank.hk"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.antbank.hk/"
+      ],
+      "loginURL": null,
+      "notes": "香港官方独立域；不扩大至alipay.com全球支付域。"
+    },
+    {
+      "name": "汇立 WeLab Bank",
+      "suffixes": [
+        "welab.bank"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.welab.bank/",
+        "https://www.welab.bank/en/about/"
+      ],
+      "loginURL": null,
+      "notes": "官方银行域，不含WeLab集团其他地区金融业务。"
+    },
+    {
+      "name": "理慧 livi Bank",
+      "suffixes": [
+        "livibank.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.livibank.com/"
+      ],
+      "loginURL": null,
+      "notes": "官方香港银行主页；App后台域覆盖未做运行抓包。"
+    },
+    {
+      "name": "众安 ZA Bank",
+      "suffixes": [
+        "bank.za.group"
+      ],
+      "exact": [
+        "cdn.za.group"
+      ],
+      "sources": [
+        "https://bank.za.group/en",
+        "https://cdn.za.group/bank/za-bank-portal-web/assets/files/en/terms/Terms%20of%20Use%20of%20Website.pdf?v=20191220",
+        "https://www.za.group/en"
+      ],
+      "loginURL": null,
+      "notes": "bank.za.group是银行站，cdn.za.group公开银行材料共享CDN。za.group另含保险、科技和其他集团业务；全域归香港的现有规则应明确是集团级选择，不能称银行独占。"
+    }
+  ],
+  "regional_exceptions": [
+    {
+      "host": "cn.cmbwinglungbank.com",
+      "target": "银行-内地",
+      "source": "https://cn.cmbwinglungbank.com/corporbank/login.html",
+      "reason": "官方页明确为招商永隆内地分行企业网上银行；应先于cmbwinglungbank.com香港后缀。"
+    }
+  ],
+  "shared_boundaries": [
+    {
+      "hosts": [
+        "www.sc.com",
+        "retail.sc.com",
+        "wealth.sc.com",
+        "s2b.standardchartered.com"
+      ],
+      "region": "shared",
+      "reason": "香港入口来自sc.com/hk，但host也供其他地区使用；规则不能看HTTPS路径。"
+    },
+    {
+      "hosts": [
+        "velocity.ocbc.com"
+      ],
+      "region": "shared",
+      "reason": "OCBC HK企业登录指向该共享域，不能仅凭入口来源判为香港独占。"
+    },
+    {
+      "hosts": [
+        "www.hsbcnet.com"
+      ],
+      "region": "shared",
+      "reason": "HSBC HK公开链接全球企业入口，不能按银行香港站来源推定香港独占。"
+    }
+  ],
+  "limitations": [
+    "27家银行品牌覆盖不等于香港所有持牌银行。",
+    "未抓取手机App所有登录后API、共享风控、短信和CDN连接。",
+    "规则只能稳定选择出口，不能保证银行接受数据中心IP或替代GPS、手机号、KYC与账户限制。",
+    "本文件不含用户认证信息；未登录银行，未修改路由器。"
+  ]
+}

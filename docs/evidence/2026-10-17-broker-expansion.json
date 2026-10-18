@@ -1,0 +1,333 @@
+{
+  "date": "2026-10-17",
+  "scope": "Read-only official public sites, official developer docs and MetaCubeX rule sources; no credentials/login/trading/network configuration changes. Hostname classification, not promise of app completeness.",
+  "brokers": [
+    {
+      "name": "Longbridge / LongPort",
+      "region": "HK",
+      "suffixes": [
+        "longbridge.cloud",
+        "longbridge.cn",
+        "longbridge.com",
+        "longbridge.global",
+        "longbridge.hk",
+        "longbridge.sg",
+        "longbridgeapp.com",
+        "longbridgehk.com",
+        "longportapp.com",
+        "longportapp.cn",
+        "lbctrl.com",
+        "lbkrs.com",
+        "wbrks.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://longbridge.com/hk",
+        "https://open.longbridge.com/docs/getting-started",
+        "https://github.com/longbridge/openapi-go/blob/main/CHANGELOG.md",
+        "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/longbridge.yaml"
+      ],
+      "notes": "User explicitly requests Longbridge HK routing. Entire shared Longbridge family follows HK preference, including .sg and CN API access domains. .cn is an access point, not an account jurisdiction. Homepage HTML explicitly references assets.lbctrl.com, assets.lbkrs.com, assets.wbrks.com; new API/quote/trade under longbridge.com/.cn; old longportapp.cn included for legacy SDK compatibility. Does not establish all private App endpoints or actual login success."
+    },
+    {
+      "name": "Futu Hong Kong dedicated domains",
+      "region": "HK",
+      "suffixes": [
+        "futuhk.com",
+        "futuhk1.com",
+        "futuhk2.com",
+        "futuhkapp.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.futuhk.com/",
+        "https://www.futuhk.com/en/about-us",
+        "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/futu.yaml"
+      ],
+      "notes": "Root official site and upstream dedicated HK names. futunn.com and futustatic.com are shared services; do not assign the whole Futu/Moomoo upstream list to HK."
+    },
+    {
+      "name": "Webull Hong Kong",
+      "region": "HK",
+      "suffixes": [
+        "webull.hk"
+      ],
+      "exact": [
+        "hktrade.wbsecurities.com"
+      ],
+      "sources": [
+        "https://www.webull.hk/"
+      ],
+      "notes": "Official homepage links hktrade.wbsecurities.com. Shared webullfintech.com serves both HK and US; do not classify root by country."
+    },
+    {
+      "name": "Phillip Hong Kong",
+      "region": "HK",
+      "suffixes": [
+        "phillip.com.hk",
+        "poems.com.hk"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.phillip.com.hk/",
+        "https://www.poems.com.hk/zh-hk"
+      ],
+      "notes": "phillip.com.hk currently redirects to poems.com.hk."
+    },
+    {
+      "name": "Tiger Hong Kong dedicated domain",
+      "region": "HK",
+      "suffixes": [
+        "tigerbrokers.com.hk"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.itiger.com/hk/en/"
+      ],
+      "notes": "Official HK entity and contact domain. itiger.com/hk and /sg share the same hostname; hostname rules cannot distinguish paths."
+    },
+    {
+      "name": "Schwab / thinkorswim",
+      "region": "US",
+      "suffixes": [
+        "schwab.com",
+        "aboutschwab.com",
+        "schwabassetmanagement.com",
+        "schwabcdn.com",
+        "schwabplan.com",
+        "thinkorswim.com",
+        "tos.mx",
+        "schwab.tech",
+        "schwabcloud.com",
+        "tdameritrade.com",
+        "ameritrade.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.schwab.com/trading/thinkorswim/download",
+        "https://toslc.thinkorswim.com/center/howToTos/thinkManual/Tools/Sharing",
+        "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/schwab.yaml"
+      ],
+      "notes": "US group based on user Schwab/TOS usage. Official download page links tosmediaserver.schwab.com and trade.thinkorswim.com. Existing schwab.tech/schwabcloud.com supplementary rules retain prior evidence. Upstream also includes schwab.com.hk/.com.sg/.co.uk; assign those dedicated regional websites separately if desired. Shared schwab.com login cannot infer account country."
+    },
+    {
+      "name": "Fidelity US",
+      "region": "US",
+      "suffixes": [
+        "fidelity.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.fidelity.com/"
+      ],
+      "notes": "US official investing site. Do not use fidelityinternational.com for this entry."
+    },
+    {
+      "name": "ETrade",
+      "region": "US",
+      "suffixes": [
+        "etrade.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://us.etrade.com/"
+      ],
+      "notes": "Official US retail brokerage and login site; root includes us.etrade.com."
+    },
+    {
+      "name": "Robinhood",
+      "region": "US",
+      "suffixes": [],
+      "exact": [
+        "robinhood.com",
+        "cdn.robinhood.com",
+        "docs.robinhood.com"
+      ],
+      "sources": [
+        "https://robinhood.com/"
+      ],
+      "notes": "Official root redirects to /us/en and HTML references cdn.robinhood.com/docs.robinhood.com. Other countries also use paths on robinhood.com: this US preference applies that shared root host, cannot infer account country. No guessed private API domains added."
+    },
+    {
+      "name": "Webull US website",
+      "region": "US",
+      "suffixes": [
+        "webull.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.webull.com/"
+      ],
+      "notes": "US site and app.webull.com. Shared trading, quotes and static services on webullfintech.com must remain shared."
+    },
+    {
+      "name": "Firstrade",
+      "region": "US",
+      "suffixes": [
+        "firstrade.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.firstrade.com/"
+      ],
+      "notes": "US brokerage official public site."
+    },
+    {
+      "name": "Vanguard US website",
+      "region": "US",
+      "suffixes": [],
+      "exact": [
+        "investor.vanguard.com",
+        "logon.vanguard.com",
+        "personal1.vanguard.com",
+        "web-registration.vanguard.com",
+        "cdn.web.vanguard.com",
+        "constellation-static.web.vanguard.com",
+        "mc3-static-assets.web.vanguard.com",
+        "n4v.web.vanguard.com"
+      ],
+      "sources": [
+        "https://investor.vanguard.com/"
+      ],
+      "notes": "All exact hosts referenced by official US investor homepage HTML. Vanguard root has multinational services; avoid classifying every vanguard.com hostname US."
+    },
+    {
+      "name": "Phillip Singapore",
+      "region": "SG",
+      "suffixes": [
+        "poems.com.sg",
+        "phillip.com.sg"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.poems.com.sg/",
+        "https://www.phillip.com.sg/"
+      ],
+      "notes": "Official Singapore brokerage and PhillipCapital sites."
+    },
+    {
+      "name": "Tiger Singapore dedicated domain",
+      "region": "SG",
+      "suffixes": [
+        "tigerbrokers.com.sg"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.itiger.com/sg/"
+      ],
+      "notes": "Official SG HTML links www.tigerbrokers.com.sg and developer.tigerbrokers.com.sg. itiger.com itself shared by region URL path."
+    },
+    {
+      "name": "Futu Singapore dedicated domain",
+      "region": "SG",
+      "suffixes": [
+        "futusg.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/futu.yaml",
+        "https://www.moomoo.com/sg/"
+      ],
+      "notes": "Dedicated legacy SG domain from upstream; moomoo.com/sg response was 403, no authenticated testing. Shared moomoo.com cannot infer SG account merely from website path."
+    },
+    {
+      "name": "Futu / Moomoo shared services",
+      "region": "SHARED",
+      "suffixes": [
+        "futu.cn",
+        "futu.link",
+        "futu5.com",
+        "futuesop.com",
+        "futufin.com",
+        "futuhn.com",
+        "futuholdings.com",
+        "futuniuniu.com",
+        "futunn.com",
+        "futuoa.com",
+        "futustatic.com",
+        "fututrade.com",
+        "moomoo.com",
+        "moomooequity.com",
+        "moomootrustee.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.futuhk.com/",
+        "https://www.moomoo.com/sg/",
+        "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/futu.yaml"
+      ],
+      "notes": "HK homepage references passport.futunn.com, q.futunn.com and cdn.futustatic.com; Moomoo SG public response also references cdn.futustatic.com. Keep shared hosts in manually selectable general finance unless user chooses whole family HK/SG."
+    },
+    {
+      "name": "Webull shared service hosts",
+      "region": "SHARED",
+      "suffixes": [
+        "webullfintech.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.webull.hk/",
+        "https://www.webull.com/"
+      ],
+      "notes": "Both official homepages reference quotes-gw.webullfintech.com, trade.webullfintech.com and wbstatic.webullfintech.com. Shared same host cannot be split by account region."
+    },
+    {
+      "name": "Tiger shared services",
+      "region": "SHARED",
+      "suffixes": [
+        "itiger.com",
+        "itigerup.com",
+        "tigerfintech.com",
+        "tigerbbs.com"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.itiger.com/sg/",
+        "https://www.itiger.com/hk/en/"
+      ],
+      "notes": "Official SG page references download.tigerfintech.com, da.tigerfintech.com, static.tigerbbs.com and www.itigerup.com. itiger.com region lives in URL path. Do not assign whole family to HK or SG absent user preference."
+    },
+    {
+      "name": "Interactive Brokers shared family",
+      "region": "SHARED",
+      "suffixes": [
+        "interactivebrokers.com",
+        "interactivebrokers.ca",
+        "interactivebrokers.ie",
+        "ibkr.com",
+        "interactivebrokers.eu",
+        "ibkr.ca",
+        "ibllc.com",
+        "ibkr.eu",
+        "ibkr.ie",
+        "ibkrguides.com",
+        "ibkr.com.sg",
+        "ibkr.co.in",
+        "interactivebrokers.co.in",
+        "interactivebrokers.co.jp",
+        "interactivebrokers.co.uk",
+        "ibkr.com.hk",
+        "interactivebrokers.com.au",
+        "interactivebrokers.com.hk",
+        "interactivebrokers.com.sg",
+        "ibkr.com.au",
+        "ibkr.co.uk"
+      ],
+      "exact": [],
+      "sources": [
+        "https://www.interactivebrokers.com/",
+        "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/classical/ibkr.yaml"
+      ],
+      "notes": "Retain existing general finance provider for account/session consistency. Regional website does not prove shared account gateway location; do not classify entire IBKR US."
+    }
+  ],
+  "upstream_checks": {
+    "longbridge": "available",
+    "schwab": "available",
+    "ibkr": "available",
+    "futu": "available",
+    "tiger": "classical/tiger.yaml returned 404",
+    "webull": "classical/webull.yaml returned 404"
+  },
+  "recommendation": "HK/US/SG brokers independent manual groups; leave multi-region shared API/asset roots in general finance unless explicit family-wide preference. Longbridge whole family follows explicit HK preference. Shared domains cannot infer URL path, account jurisdiction or service region."
+}
