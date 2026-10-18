@@ -21,8 +21,9 @@ assert set(c) == {'rules', 'proxy-groups', 'rule-providers', 'profile', 'dns'}
 for marker in ['vless://', 'ss://', 'token2=', 'PRIVATE KEY', 'password:', 'uuid:', 'private-key:', 'DMIT', 'AmyTelecom', '日本节点', '美国节点']:
     assert marker not in raw, 'Credential or provider/region dependency in public template'
 G, F, C, A, ADS = '🌍 海外默认', '🏦 金融', '🪙 Crypto', '🤖 AI / X', '🛑 广告过滤'
+CN, HK, US, SG = '🏦 银行-内地', '🏦 银行-香港', '🏦 银行-美国', '🏦 银行-新加坡'
 groups = {g['name']: g for g in c['proxy-groups']}
-assert set(groups) == {G, F, C, A, ADS} and len(c['proxy-groups']) == 5
+assert set(groups) == {G, F, C, A, ADS, CN, HK, US, SG} and len(c['proxy-groups']) == 9
 assert c['profile']['store-selected'] is True
 for name, group in groups.items():
     assert group['type'] == 'select'
@@ -53,7 +54,7 @@ def leaf(name, pool, selected=None, seen=None):
 
 for pool in [['node-a', 'node-b'], ['任意来源-甲', '任意来源-乙'], []]:
     for name in groups:
-        assert leaf(name, pool) == 'REJECT', 'First import must not silently select a random exit'
+        assert leaf(name, pool) == ('DIRECT' if name == CN else 'REJECT'), 'First import must not silently select a random exit'
     if pool:
         assert leaf(F, pool, {G: pool[0]}) == pool[0]
         assert leaf(A, pool, {G: pool[0]}) == pool[0]
@@ -61,6 +62,11 @@ for pool in [['node-a', 'node-b'], ['任意来源-甲', '任意来源-乙'], []]
         assert leaf(F, pool, {G: pool[0], F: pool[1]}) == pool[1]
         assert leaf(A, pool, {G: pool[0], A: pool[1]}) == pool[1]
         assert leaf(ADS, pool, {G: pool[0], ADS: G}) == pool[0]
+        for bank in [HK, US, SG]:
+            assert leaf(bank, pool, {G: pool[0]}) == 'REJECT', 'Regional bank must not inherit the global exit silently'
+            assert leaf(bank, pool, {G: pool[0], bank: pool[1]}) == pool[1]
+        assert leaf(CN, pool, {G: pool[0]}) == 'DIRECT'
+        assert leaf(CN, pool, {CN: pool[1]}) == pool[1]
 
 
 def get(item):
@@ -100,23 +106,27 @@ proxy = yaml.safe_load((ROOT / 'rules/proxy.yaml').read_text())['payload']
 assert not set(direct) & set(proxy), 'Same entry in direct and proxy exceptions'
 
 
-def route(host):
+def route(host, rules=None, extra_targets=()):
     try:
         ip = ipaddress.ip_address(host)
     except ValueError:
         ip = None
-    for row in c['rules']:
+    for row in c['rules'] if rules is None else rules:
         z = row.split(',')
         if z[0] == 'MATCH':
             assert z[1] in groups
             return z[1]
-        assert z[0] == 'RULE-SET' and z[1] in sets
-        assert z[2] in groups or z[2] in ['DIRECT', 'REJECT']
-        if c['rule-providers'][z[1]]['behavior'] == 'domain':
+        assert z[2] in groups or z[2] in ['DIRECT', 'REJECT'] or z[2] in extra_targets
+        if z[0] == 'DOMAIN-SUFFIX':
+            match = host == z[1] or host.endswith('.' + z[1])
+        elif z[0] == 'IP-CIDR' or z[0] == 'IP-CIDR6':
+            match = ip is not None and ip in ipaddress.ip_network(z[1])
+        elif z[0] == 'RULE-SET' and c['rule-providers'][z[1]]['behavior'] == 'domain':
             exact, suffix = sets[z[1]]
             parts = host.split('.')
             match = host in exact or any('.'.join(parts[i:]) in suffix for i in range(len(parts)))
         else:
+            assert z[0] == 'RULE-SET' and z[1] in sets
             match = ip is not None and any(ip in net for net in sets[z[1]])
         if match:
             return z[2]
@@ -124,20 +134,50 @@ def route(host):
 
 
 cases = {h: 'DIRECT' for h in [
-    'www.hsbc.com.cn', 'www.icbc.com.cn', 'www.ccb.com', 'www.boc.cn', 'www.abchina.com',
-    'www.cmbchina.com', 'www.bankcomm.com', 'tello.com', 'epdg.epc.mnc260.mcc310.pub.3gppnetwork.org',
+    'tello.com', 'epdg.epc.mnc260.mcc310.pub.3gppnetwork.org',
     'epdg.epc.mnc240.mcc310.pub.3gppnetwork.org', 'test.wifi.t-mobile.com', '192.168.2.22',
     'fc00::1', 'router.lan', 'localhost', 'api.deepseek.com', 'www.bilibili.com',
 ]}
-cases.update({h: F for h in ['www.hsbc.co.uk', 'www.hsbc.com.hk', 'www.interactivebrokers.com', 'api.ibkr.com', 'www.schwab.com', 'www.longbridge.com', 'openapi.longportapp.com']})
+cases.update({h: F for h in ['trade.thinkorswim.com', 'www.tdameritrade.com', 'www.ameritrade.com', 'tos.mx', 'tosmediaserver.schwab.com', 'thinkorswim-services.schwab.com', 'papermoney-services.schwab.com', 'test.schwab.tech', 'thinkorswim-services-b.tos-prd.prd.gcp.schwabcloud.com', 'www.schwab.com.hk', 'www.schwab.com.sg', 'www.hsbc.co.uk', 'www.hsbc.com', 'www2.secure.hsbcnet.com', 'www.privatebanking.hsbc.com', 'www.hsbc.com.au', 'www.interactivebrokers.com', 'api.ibkr.com', 'www.schwab.com', 'www.longbridge.com', 'openapi.longportapp.com']})
+cases.update({h: CN for h in ['www.hsbc.com.cn', 'www.services.online-banking.hsbc.com.cn', 'www.hsbcqh.com.cn', 'www.hsbcinsurance.com.cn', 'www.cn.secure.hsbcnet.com', 'www.icbc.com.cn', 'www.ccb.com', 'www.boc.cn', 'www.abchina.com', 'www.cmbchina.com', 'www.bankcomm.com']})
+cases.update({h: HK for h in ['www.hsbc.com.hk', 'www.services.online-banking.hsbc.com.hk', 'financialplanningpublic.hk.personal-banking.hsbc.com', 'bank.za.group', 'developer.bank.za.group', 'bank-invest.za.group', 'business-internet-banking.za.group', 'cdn.za.group']})
+cases.update({h: US for h in ['www.us.hsbc.com', 'www.security.us.hsbc.com', 'services.online-banking.us.hsbc.com', 'investmentsplanning.us.personal-banking.hsbc.com']})
+cases.update({h: SG for h in ['www.hsbc.com.sg', 'www.dbs.com.sg', 'internet-banking.dbs.com.sg', 'www.posb.com.sg', 'www.ocbc.com', 'internet.ocbc.com', 'pib.uob.com.sg', 'www.uob.sg', 'www.uobgroup.com.sg', 'www.starryblu.com', 'blog.starryblu.com', 'h2static.wotransfer.com', 'sg.starryblu.com', 'starryblu-public.oss-accelerate.aliyuncs.com']})
 cases.update({h: C for h in ['www.binance.com', 'www.okx.com', 'www.tradingview.com', 'zftksc.cdn-settings.appsflyersdk.com']})
 cases.update({h: A for h in ['claude.ai', 'x.com', 'api.x.com', 'pbs.twimg.com', 'video.twimg.com', 't.co', 'grok.com', 'x.ai', 'chatgpt.com', 'cdn.oaistatic.com', 'api.anthropic.com', 'gemini.google.com', 'generativelanguage.googleapis.com', 'aistudio.google.com', 'perplexity.ai', 'api.githubcopilot.com', 'cursor.com']})
 cases.update({h: G for h in ['www.microsoft.com', 'outlook.live.com', 'login.microsoftonline.com', 'apple.news', 'news-client-search.apple.com', 'gateway.icloud.com', 'www.t-mobile.com', 'raw.githubusercontent.com', 'github.com', '208.54.85.1', 'unlisted-routing-test-7d95.net']})
 cases['doubleclick.net'] = ADS
+cases.update({h: A for h in ['copilot.github.com', 'copilot-proxy.githubusercontent.com']})
 for host, want in cases.items():
     assert route(host) == want, (host, route(host), want)
+assert route('insure.za.group') != HK, 'Do not classify every ZA Group business as ZA Bank'
+assert route('www.dbs.com') != SG, 'Do not guess region from a shared group domain'
+assert route('www.ocbc.com.my') != SG, 'Do not classify other-country suffixes as Singapore'
+assert leaf(route('www.hsbc.com.cn'), ['node-a'], {G: 'node-a'}) == 'DIRECT'
+# Regions identify banking services, never the geography of arbitrary nodes.
+for host, region in [('bank.za.group', HK), ('www.us.hsbc.com', US), ('www.hsbc.com.sg', SG)]:
+    assert leaf(route(host), ['arbitrary-name'], {region: 'arbitrary-name'}) == 'arbitrary-name'
 assert c['rules'][-1] == 'MATCH,' + G
 assert not any(x.startswith('AND,') for x in c['rules'])
+
+# Tower adds private Tailscale nodes/rules outside this public credential-free
+# template. Keep that prefix before private-ip; never bake a real tailnet in here.
+ts = 'fixture-tailscale'
+ts_prefix = ['DOMAIN-SUFFIX,fixture-tailnet.example,' + ts,
+             'IP-CIDR,100.64.0.0/10,' + ts + ',no-resolve',
+             'IP-CIDR6,fd7a:115c:a1e0::/48,' + ts + ',no-resolve']
+for host in ['nas.fixture-tailnet.example', '100.64.0.42', 'fd7a:115c:a1e0::1']:
+    assert route(host, ts_prefix + c['rules'], (ts,)) == ts
+for host, want in cases.items():
+    assert route(host, ts_prefix + c['rules'], (ts,)) == want
+# Regional banks must never have the same explicit exception in two regions.
+regional_entries = {}
+for name in ['bank-cn', 'bank-hk', 'bank-us', 'bank-sg']:
+    entries = yaml.safe_load((ROOT / 'rules' / (name + '.yaml')).read_text())['payload']
+    assert len(entries) == len(set(entries)), 'Duplicate regional exception'
+    for entry in entries:
+        assert entry not in regional_entries, 'Ambiguous regional exception: ' + entry
+        regional_entries[entry] = name
 
 # Derived artifacts must stay generated from tower.yaml (scripts/gen_overwrites.py).
 derived_rules = [r for r in c['rules'] if not r.startswith('MATCH,')]
@@ -179,4 +219,4 @@ if args.mihomo_bin:
         path.write_text(yaml.safe_dump(fixture_config, allow_unicode=True, sort_keys=False))
         subprocess.run([args.mihomo_bin, '-t', '-d', tmp, '-f', str(path)], check=True)
 print(f'PASS: {len(groups)} provider-independent groups, {len(loaded)} rule sets, {len(cases)} routing cases, renamed/empty node pools; synthetic nodes only.')
-print('First import: select an overseas node and a Crypto node. Neither group auto-selects a country or provider.')
+print('First import: select overseas, Crypto, Hong Kong / US / Singapore banking exits. Mainland banking defaults DIRECT; no group auto-selects a country or provider.')

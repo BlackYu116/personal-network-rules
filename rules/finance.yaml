@@ -1,4 +1,11 @@
-# 精确域名直接写；域名及其全部子域名使用 +.example.com。
+# 券商、其他地区银行及共享入口的个人补充；已细分地区移至bank-*.yaml。
 payload:
 - +.hsbc.co.uk
-- +.hsbc.com.hk
+# Schwab/thinkorswim公开端点；来源与共享入口边界见docs/bank-regions.md。
+- +.thinkorswim.com
+- +.tos.mx
+- +.schwab.tech
+- +.schwabcloud.com
+# 历史官网目前重定向嘉信；保留入口兼容，不宣称旧交易API仍在线。
+- +.tdameritrade.com
+- +.ameritrade.com

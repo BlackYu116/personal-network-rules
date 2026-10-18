@@ -37,12 +37,16 @@ header = """\
 #   3. 打开该模块的启用开关，然后重启 OpenClash 插件（仅保存不生效）。
 #
 # 效果与回退：
-#   - 18 个规则集改为 rule-providers 远程更新；改 GitHub 上 rules/*.yaml 后，
+#   - 全部规则集改为 rule-providers 远程更新；改 GitHub 上 rules/*.yaml 后，
 #     路由器一天内自动跟上，或在「规则集」页手动更新，无需塔台重新导出。
 #     塔台重导出仍用于换节点、改组结构或基础DNS。
 #   - 规则集下载失败时内核照常启动：失败的集合不命中，流量落到塔台导出的
 #     静态规则，安全降级；恢复后按间隔自动重试。
 #   - 回退：关闭模块开关并重启插件，即回到纯静态导出。
+#
+# Tailscale 配置不要启用本模块：+rules 会把通用内网直连放到专用 Tailscale 规则前。
+# 使用塔台完整静态导出并保留 Tailscale 前置规则；说明见 docs/tailscale.md。
+# 本模块不创建策略组：新增地区银行组后，必须先从塔台重导包含全部组的配置。
 """
 ini = [header, '[YAML]', 'rule-providers:']
 for name, body in c['rule-providers'].items():

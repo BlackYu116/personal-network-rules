@@ -1,0 +1,70 @@
+银行地区域名证据（官方公开网页取证）
+核查日期：2026-10-17（America/Los_Angeles）
+范围：仅官方公共网页和 MetaCubeX 官方公开 geosite；未访问用户账户、未提交登录、未观测手机 App 实际会话。未猜测 App API 域名，未按服务器 IP 所在国家判断账户地区。
+
+建议 DOMAIN-SUFFIX 基线
+美国金融：us.hsbc.com；us.personal-banking.hsbc.com
+香港金融：hsbc.com.hk；hk.personal-banking.hsbc.com；bank.za.group；bank-invest.za.group；business-internet-banking.za.group；cdn.za.group
+中国大陆金融：hsbc.com.cn；cn.secure.hsbcnet.com（只有该中国专用子树，不包括整个 hsbcnet.com）
+新加坡金融：hsbc.com.sg；dbs.com.sg；posb.com.sg；ocbc.com；uob.com.sg；uob.sg；uobgroup.com.sg
+
+证据与范围
+1. HSBC US
+https://www.us.hsbc.com/online-banking/
+https://www.us.hsbc.com/register/
+https://www.security.us.hsbc.com/ContentService/gsp/saas/Components/htmls/termsAndConditions/TNC.pdf
+美国官方个人网银入口与条款域均在 us.hsbc.com 子树。2026-10-17 用 urllib 读取第一项公共 HTML，还发现 services.online-banking.us.hsbc.com 与 investmentsplanning.us.personal-banking.hsbc.com，后一项需要单独的 us.personal-banking.hsbc.com 后缀。
+
+2. HSBC HK
+https://www.hsbc.com.hk/ways-to-bank/internet/
+https://www.hsbc.com.hk/ways-to-bank/mobile-apps/banking/
+公共 HTML 明示 www.services.online-banking.hsbc.com.hk、www.personal.ebanking.hsbc.com.hk、myportfolio.personal-banking.hsbc.com.hk 等域，均被 hsbc.com.hk 覆盖；另有 financialplanningpublic.hk.personal-banking.hsbc.com，需单独的 hk.personal-banking.hsbc.com 后缀。页面链接同时出现美国、Expat、环球及资产管理服务，不能把页面中全部 hsbc.com 主机都归香港。
+
+3. HSBC China Mainland
+https://www.hsbc.com.cn/ways-to-bank/online/
+公共 HTML 的个人网银链接为 https://www.services.online-banking.hsbc.com.cn/gpib ，同时列出中国商业网银 https://www.cn.secure.hsbcnet.com/uims/portal/IDV_CAM10_AUTHENTICATION 。因此 hsbc.com.cn 与 cn.secure.hsbcnet.com 有明确大陆用途。
+
+4. HSBC Singapore
+https://www.hsbc.com.sg/ways-to-bank/online/
+https://www.hsbc.com.sg/security/
+https://www.hsbc.com.sg/ways-to-bank/mobile/singapore-app/faq/
+官方公开个人登录入口在 www.hsbc.com.sg/security/。官方 App FAQ 说明 Global View 可连接 UK、USA、HK、SG、UAE、Expat 账户；一个 App 显示多个地区账户，不等于网络能按账户内容选择出口。
+
+5. ZA Bank
+https://bank.za.group/en
+https://cdn.za.group/bank/za-bank-portal-web/assets/files/en/terms/Terms%20of%20Use%20of%20Website.pdf?v=20191220
+官网与条款明确发行人是香港 ZA Bank Limited。2026-10-17 公共 HTML 直接出现 bank.za.group、developer.bank.za.group、bank-invest.za.group、business-internet-banking.za.group、cdn.za.group，也出现 insure.za.group、blog.za.group、athena.za.group、xman-xflow-sdk.za.group。建议银行主业务与公开资源使用前四个独立后缀；开发者域被 bank.za.group 覆盖。未把集团保险、博客与 SDK/统计域作为银行地区强制规则。上述列表不是手机 App API 完整清单。
+
+6. DBS / POSB Singapore
+https://www.dbs.com.sg/personal/digital-banking/ibanking-mobile-app
+https://internet-banking.dbs.com.sg/digi-web/ngib/
+https://www.posb.com.sg/personal/deposits/bank-with-ease/e-services-existing-ib-customer.page
+官方说明 DBS/POSB 共用 digibank 登录能力，公开登录域在 dbs.com.sg 下。dbs.com 是集团共享域，本次不因品牌相同把它全部判为 SG。
+
+7. OCBC Singapore
+https://www.ocbc.com/personal-banking/help-and-support/digital-banking/online-banking-login
+https://www.ocbc.com/group/security
+https://internet.ocbc.com/
+https://www.ocbc.com/personal-banking/digital-banking/sg-bank-account
+官方新加坡个人网银链接指向 ocbc.com/login 和 internet.ocbc.com/internet-banking，支持 ocbc.com 作为 SG 基线。边界：ocbc.com 同时用于集团服务，其后缀并不证明每项内容均属于新加坡账户；如未来使用其他地区 OCBC 需针对域名复核。马来西亚官方使用 ocbc.com.my，不会被 ocbc.com 后缀规则误匹配。
+
+8. UOB Singapore
+https://www.uob.sg/personal/index.page
+https://www.uobgroup.com.sg/personal/digital-banking/pib/index.page
+https://pib.uob.com.sg/auth/
+https://forms.uob.com.sg/uobforms/POR/index.page
+SG 官网、产品说明与个人登录分属 uob.sg、uobgroup.com.sg、uob.com.sg，三项都需要。集团 uobgroup.com 不宜仅凭品牌直接判为所有 SG 业务。
+
+HSBC 共享域与不可消除的边界
+https://www.hsbcnet.com/hsbcnet-getting-started/logging-on-to-hsbcnet
+https://www2.secure.hsbcnet.com/uims/dl/DSP_AUTHENTICATION?__langid=en
+https://www.business.us.hsbc.com/en/campaigns/ways-to-bank
+HSBCnet 是跨地区企业服务；全球统一登录主机不能按银行账户地区分流。普通加密 HTTPS 的域名分流看不到 URL 路径、账号或请求正文，不应为区分账户打开 TLS 解密。hsbc.com / hsbcnet.com 的广义规则必须保留为通用金融兜底；地区子域在其前面优先匹配。不能声称仅靠规则就让所有地区同域共享服务自动识别。
+
+MetaCubeX 公开规则核对
+https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/hsbc.yaml
+此 HSBC 全品牌集合含 hsbc.com、hsbcnet.com 及各国后缀；直接让整个集合走同一个地区会重现用户困扰。细分域必须在该集合前，保留集合做未识别共享服务兜底。dbs.yaml / ocbc.yaml / uob.yaml / za.yaml 对应公开路径在本次检查返回 404，未据此伪造官方规则覆盖。
+
+验证建议
+离线覆盖用例应包含 www.us.hsbc.com、www.security.us.hsbc.com、services.online-banking.us.hsbc.com、investmentsplanning.us.personal-banking.hsbc.com、www.services.online-banking.hsbc.com.hk、financialplanningpublic.hk.personal-banking.hsbc.com、www.services.online-banking.hsbc.com.cn、www.cn.secure.hsbcnet.com、www2.secure.hsbcnet.com、www.hsbc.com.sg、bank.za.group、bank-invest.za.group、insure.za.group、internet-banking.dbs.com.sg、internet.ocbc.com、pib.uob.com.sg，并确认共享域落在通用金融兜底。
+这些是公开域名的匹配测试。银行 App 登录、风控、设备状态、DNS 与实际出口连通性仍需用户在固定出口下实测，不承诺所有服务不可用均由分流解决。

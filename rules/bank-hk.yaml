@@ -1,0 +1,9 @@
+# 地区银行域名：来源和共享服务边界见 docs/bank-regions.md。
+# 组名仅标识业务地区，实际出口须由用户手选验证；不是按服务器IP地理位置分类。
+payload:
+- +.hsbc.com.hk
+- +.hk.personal-banking.hsbc.com
+- +.bank.za.group
+- +.bank-invest.za.group
+- +.business-internet-banking.za.group
+- +.cdn.za.group

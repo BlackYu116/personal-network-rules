@@ -1,0 +1,15 @@
+# 地区银行域名：来源和共享服务边界见 docs/bank-regions.md。
+# 组名仅标识业务地区，实际出口须由用户手选验证；不是按服务器IP地理位置分类。
+payload:
+- +.hsbc.com.sg
+- +.dbs.com.sg
+- +.posb.com.sg
+- +.ocbc.com
+- +.uob.com.sg
+- +.uob.sg
+- +.uobgroup.com.sg
+- +.starryblu.com
+# Starryblu官方页面使用的静态资源主机；不扩大为整个集团域。
+- h2static.wotransfer.com
+# Starryblu官方前端的专用存储桶；不匹配其他阿里云租户。
+- starryblu-public.oss-accelerate.aliyuncs.com

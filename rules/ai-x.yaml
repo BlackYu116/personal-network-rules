@@ -4,3 +4,6 @@ payload:
 - +.claude.com
 - +.x.ai
 - +.grok.com
+# 精确业务子域优先于github全站代理例外，不把整个GitHub改归AI。
+- +.copilot.github.com
+- +.copilot-proxy.githubusercontent.com

@@ -12,19 +12,25 @@ https://raw.githubusercontent.com/BlackYu116/personal-network-rules/main/tower.y
 
 这是规则方案，不是含节点的订阅。先在塔台启用并勾选你的节点，再导入规则并按客户端导出。
 
-**首次使用必须做两次选择：**在“🌍 海外默认”选日常出口，在“🪙 Crypto”选Crypto出口（按目前偏好手选实测日本节点）。两组初始均为REJECT，不会根据节点名字猜测实际国家，也不会自动挑选某个机场。选完后更新规则资源；客户端支持时会保存选择。旧客户端持久选择可能覆盖文件首项，迁移时应检查。
+**首次导入需手选五个出口：**海外默认、Crypto，以及香港/美国/新加坡银行。它们初始均为REJECT，避免把香港银行自动送到现有美国出口。内地银行默认DIRECT；金融和AI/X仍默认跟随海外默认。组名标识服务地区，不会根据节点名称猜测实际国家；先验证节点真实出口，再固定选择。
 
-## 五个通用策略组
+## 九个手选策略组
 
 | 组 | 初始选择 | 用途 |
 |---|---|---|
-| 🌍 海外默认 | REJECT，首次手选节点 | 其他境外流量、个人强制代理例外 |
-| 🏦 金融 | 海外默认 | HSBC境外业务、IBKR、Schwab、Longbridge；也可单独固定节点 |
-| 🪙 Crypto | REJECT，首次手选节点 | Binance、OKX、TradingView及其他Crypto |
-| 🤖 AI / X | 海外默认 | 境外AI和X；也可单独固定节点 |
-| 🛑 广告过滤 | REJECT | 可临时改选海外默认或DIRECT排查误杀 |
+| 🌍 海外默认 | REJECT，首次手选 | 其他境外流量 |
+| 🏦 金融 | 海外默认 | IBKR、嘉信/thinkorswim、Longbridge，其他地区与无法区分地区的银行共享入口 |
+| 🏦 银行-内地 | DIRECT | 汇丰中国及已列入的主要大陆银行 |
+| 🏦 银行-香港 | REJECT，首次手选香港出口 | 汇丰香港、ZA Bank银行业务域名 |
+| 🏦 银行-美国 | REJECT，首次手选美国出口 | 汇丰美国专用服务域名 |
+| 🏦 银行-新加坡 | REJECT，首次手选新加坡出口 | 汇丰新加坡、DBS/POSB、OCBC、UOB、Starryblu |
+| 🪙 Crypto | REJECT，首次手选 | Binance、OKX、TradingView及其他Crypto |
+| 🤖 AI / X | 海外默认 | 境外AI和X，可独立固定出口 |
+| 🛑 广告过滤 | REJECT | 可临时改为海外默认或DIRECT排查误杀 |
 
-前四组可直接选择当前启用的任意节点。更换机场或停用自有VPS，不需要改分流规则；重新导出节点后检查旧选项是否仍存在。没有国家组、供应商品牌过滤，**也没有任何自动测速/自动切换组**——全部出口手选并保持，出口IP稳定是账户风控的一部分，这是有意设计；换出口永远是显式的手动动作。国内银行、国内网站、内网和Tello指定域名仍直连。
+除广告组外，各组可手选当前启用的任意节点。所有组均为select；不测速换出口，不按机场或国家标签自动筛节点。原来的五个组名和候选关系保留，新增银行组不会自动继承旧金融组的节点。国内网站、内网和Tello指定域名仍按既有直连规则处理。
+
+同一个HTTPS域名中的不同国家账户、URL路径或Global View页面，不能靠域名规则区分。`hsbc.com`、全球HSBCnet等共享入口保留金融兜底；有证据的地区子域先匹配。详见[银行地区、来源与边界](docs/bank-regions.md)。
 
 Apple News不再单独分组，没有强制 `gateway.icloud.com` 的特殊路由。Microsoft也不再整家公司一律直连：已有国内分类走直连，其余按海外规则处理；其AI服务优先进入AI组。历史News文档及旧规则URL暂留以兼容旧导出，新模板不引用。
 
@@ -34,7 +40,8 @@ Apple News不再单独分组，没有强制 `gateway.icloud.com` 的特殊路由
 |---|---|
 | 强制直连 | [rules/direct.yaml](rules/direct.yaml) |
 | 强制使用海外默认 | [rules/proxy.yaml](rules/proxy.yaml) |
-| 金融专用域名补充 | [rules/finance.yaml](rules/finance.yaml) |
+| 券商/其他地区/共享金融入口 | [rules/finance.yaml](rules/finance.yaml) |
+| 地区银行 | [内地](rules/bank-cn.yaml)、[香港](rules/bank-hk.yaml)、[美国](rules/bank-us.yaml)、[新加坡](rules/bank-sg.yaml) |
 | Crypto/TradingView补充 | [rules/crypto.yaml](rules/crypto.yaml) |
 | AI/X补充 | [rules/ai-x.yaml](rules/ai-x.yaml) |
 | 策略关系、顺序、基础DNS | [tower.yaml](tower.yaml) |
@@ -45,7 +52,7 @@ Apple News不再单独分组，没有强制 `gateway.icloud.com` 的特殊路由
 
 ## 规则逻辑
 
-优先级为：内网 → 明确直连及HSBC China → 明确海外例外 → 个人业务例外 → 金融/Crypto/AI/X上游分类 → 可切换广告过滤 → 国内域名/IP → 海外默认。
+优先级为：内网 → 明确直连 → 地区银行及HSBC China → 个人业务例外 → 明确海外例外 → 金融/Crypto/AI/X上游分类 → 可切换广告过滤 → 国内域名/IP → 海外默认。个人业务例外优先于GitHub全站这类较宽的海外例外，避免Copilot被普通GitHub规则抢先。
 
 业务分类优先于通用广告库，是考虑账户登录和交易功能的稳定性；这可能放行属于业务域名的部分追踪请求。广告误杀优先用少量明确例外修正，广告组临时放行用于排查。完整理由、ACL4SSR对照及限制见[规则设计](docs/routing-design.md)。
 
@@ -60,13 +67,13 @@ Apple News不再单独分组，没有强制 `gateway.icloud.com` 的特殊路由
 
 | 设备 | 采用方案 | 生效方式 |
 |---|---|---|
-| OpenClash | [mihomo/openclash-ruleset-overwrite.ini](mihomo/openclash-ruleset-overwrite.ini) 覆写模块 | 18个规则集恢复远程引用，每天自动更新；详见[OpenClash自动更新](docs/openclash.md) |
+| OpenClash | [mihomo/openclash-ruleset-overwrite.ini](mihomo/openclash-ruleset-overwrite.ini) 覆写模块 | 22个规则集恢复远程引用，每天自动更新（含Tailscale导出的配置不要启用此模块）；详见[OpenClash自动更新](docs/openclash.md) |
 | Quantumult X | [qx/filter-remote-snippet.conf](qx/filter-remote-snippet.conf) 轻量配置 | filter_remote每天自动更新；详见[QX远程规则](docs/qx-remote-rules.md) |
 | 未采用上述 | 塔台重新导出并上传 | 结构不变时不需要；换节点/改组/改DNS仍走这条路 |
 
 两个派生文件由 `python scripts/gen_overwrites.py` 从 tower.yaml 生成，验证脚本会检查同步；改完 tower.yaml 后重新生成并提交。
 
-[塔台导入与迁移](docs/tower.md) · [DNS边界](docs/dns.md) · [OpenClash自动更新](docs/openclash.md) · [IPv6路线](docs/ipv6.md) · [透明代理调优](docs/transparent-proxy.md) · [Tello](docs/tello.md) · [QX远程规则与文件体积](docs/qx-remote-rules.md)
+[塔台导入与迁移](docs/tower.md) · [DNS边界](docs/dns.md) · [OpenClash自动更新](docs/openclash.md) · [IPv6路线](docs/ipv6.md) · [透明代理调优](docs/transparent-proxy.md) · [Tailscale与新版导出验收](docs/tailscale.md) · [Tello](docs/tello.md) · [QX远程规则与文件体积](docs/qx-remote-rules.md)
 
 ## Quantumult X 工具
 
@@ -78,7 +85,7 @@ Apple News不再单独分组，没有强制 `gateway.icloud.com` 的特殊路由
 
 ## 验证与来源
 
-GitHub Actions检查分流场景、策略引用、任意命名节点、空节点池、资源解析器及手动体检脚本。测试不需要私人订阅。可用本地Mihomo额外校验基础配置和可选DNS/UDP片段。
+GitHub Actions检查地区银行、共享入口和业务分流场景、策略引用、任意命名节点、空节点池、资源解析器及手动体检脚本。测试不需要私人订阅。可用本地Mihomo额外校验基础配置和可选DNS/UDP片段。
 
 ```sh
 python -m pip install -r requirements.txt

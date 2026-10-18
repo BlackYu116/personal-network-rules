@@ -1,0 +1,65 @@
+StarryBlu / 嘉信 / thinkorswim 公开域名证据
+核查日期：2026-10-17（America/Los_Angeles）
+仅核查官方公共页面、公共静态 JS 与 HTTP 响应头；未访问用户账户、未登录、未连接行情/交易 API、未检查实际交易流量。
+
+已采用规则与取证边界
+SG：DOMAIN-SUFFIX,starryblu.com
+SG：DOMAIN,h2static.wotransfer.com（采用精确静态资源主机，不扩大到整个wotransfer.com）
+SG：DOMAIN,starryblu-public.oss-accelerate.aliyuncs.com（精确对象存储主机，绝不使用 aliyuncs.com 通配）
+嘉信/thinkorswim 同一手选组：DOMAIN-SUFFIX,thinkorswim.com
+嘉信/thinkorswim 同一手选组：DOMAIN-SUFFIX,tos.mx
+嘉信/thinkorswim 同一手选组：DOMAIN-SUFFIX,schwab.tech
+嘉信/thinkorswim 同一手选组：DOMAIN-SUFFIX,schwabcloud.com（或更保守的 DOMAIN,thinkorswim-services-b.tos-prd.prd.gcp.schwabcloud.com）
+旧书签兼容：DOMAIN-SUFFIX,tdameritrade.com；DOMAIN-SUFFIX,ameritrade.com
+schwab.com、schwabcdn.com 等已有 geosite 集合覆盖，继续保留。
+
+StarryBlu 证据
+https://www.starryblu.com/en/company
+官方公司页写明总部 Singapore、运营公司 Wotransfer Pte. Ltd.；本研究只用作地区归类，不作投资或可靠性评价。公共 HTML 直接加载 h2static.wotransfer.com 图片/视频。
+https://www.starryblu.com/assets/index.8fd64245.js
+此公共生产首页直接引用的 bundle 中配置：
+starrybluProd: https://sg.starryblu.com
+starrybluOpenProd: https://sg.starryblu.com
+cdn: https://h2static.wotransfer.com
+stbStaticUrl: https://starryblu-public.oss-accelerate.aliyuncs.com
+同时存在 pandaremit.com 的测试环境和其他地区生产环境，不能仅凭同一 bundle 就把整个 pandaremit.com 全部划入 SG。以上是部署代码中明确字符串，不是对实际 App 网络连接的断言。
+
+MetaCubeX 嘉信覆盖
+https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/schwab.yaml
+2026-10-17 公开 payload 为：aboutschwab.com / schwab.com / schwabassetmanagement.com / schwabcdn.com / schwabplan.com / schwab.co.uk / schwab.com.hk / schwab.com.sg。
+没有 thinkorswim.com、tos.mx、schwab.tech、schwabcloud.com 或旧 TD Ameritrade 域。因此仅依赖此集合不能声称覆盖 thinkorswim 全链路。
+
+thinkorswim 官方登录/安装/分享
+https://www.schwab.com/trading/thinkorswim/download
+官方下载按钮当前链接至 tosmediaserver.schwab.com（被 schwab.com 覆盖）；web 登录链接为 https://trade.thinkorswim.com/。
+https://www.schwab.com/content/how-to-install-thinkorswim
+https://www.schwab.com/content/watch-thinkorswim-overview-video
+官方教程明确通过 trade.thinkorswim.com 或 thinkorswim.com 进入，并使用 Schwab 登录。无需猜测桌面客户端服务器名。
+https://toslc.thinkorswim.com/center/howToTos/thinkManual/Tools/Sharing
+官方手册明确 tos.mx 是共享图表/工作空间等内容的门户。
+
+当前登录页面公开响应头的业务主机证据
+https://trade.thinkorswim.com/
+2026-10-17 使用 urllib 读取官方页面实际 Content-Security-Policy，出现：
+https://tosweb-sm.thinkorswim.com
+https://sws-gateway-nr.thinkorswim.com
+https://sws-gateway.thinkorswim.com
+https://*.schwab.tech
+wss://thinkorswim-services.schwab.com/Services/WsJson
+wss://papermoney-services.schwab.com/Services/WsJson
+wss://thinkorswim-services-b.tos-prd.prd.gcp.schwabcloud.com/Services/WsJson
+这证明页面声明允许使用这些官方业务来源，足以补域名基线，但 CSP 不能证明本次页面实际建立了所有连接，也不能证明行情和桌面客户端只使用这些域。
+
+行情/协助/视频第三方边界
+同一 CSP 还列出 *.markitdigital.com、*.wsod.com、*.wsodqa.com、*.uplynk.com、*.cnbc.com、*.glance.net、*.glancecdn.net、*.launchdarkly.com、cdn.appdynamics.com 及广告/分析来源等。
+这些是共享第三方域，公开 CSP 不足以认定所有子域都属于用户的嘉信行情业务。建议不要把整个平台域全局绑到某个金融出口；需要实际连接中出现的精确主机后再加。也不把观察到的第三方 CDN 全部加入 REJECT 例外。当前没有官方公开完整桌面/移动版 API/行情防火墙清单，因此不得宣称覆盖绝对完整。
+
+旧域的当前状态
+https://www.tdameritrade.com/
+https://www.ameritrade.com/
+本次实际读取两者均重定向 https://www.schwab.com/welcome-to-schwab 。页面说明 TD Ameritrade 客户现已迁至 Schwab，并提供 thinkorswim 平台。保留旧域规则可兼容书签/历史内容，但不能说旧 auth/streamer/API 仍在使用。
+https://www.schwab.com/welcome-to-schwab
+
+建议匹配测试用例
+client.schwab.com、tosmediaserver.schwab.com、trade.thinkorswim.com、toslc.thinkorswim.com、tos.mx、业务.schwab.tech（仅离线后缀合成用例，非声称实际域名）、thinkorswim-services-b.tos-prd.prd.gcp.schwabcloud.com、www.tdameritrade.com、sg.starryblu.com、h2static.wotransfer.com、starryblu-public.oss-accelerate.aliyuncs.com。
+验证目标是组选择一致、后缀匹配和规则顺序；不能据离线测试宣称真实账户登录/实时行情/交易下单已验证。
